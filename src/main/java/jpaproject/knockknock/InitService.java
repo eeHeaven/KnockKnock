@@ -19,9 +19,7 @@ public class InitService {
     public void dbInit1(){
         Post post1 = createPost("안녕","반가워","인사");
         em.persist(post1);
-        PostHashTag tag = new PostHashTag();
-        tag.setTag("굿바이");
-        post1.addHashTag(tag);
+        post1.addHashTag("굿바이");
         em.persist(post1);
         Post post2 = createPost("안녕하세요","반갑습니다","인사");
         em.persist(post2);
@@ -42,7 +40,7 @@ public class InitService {
         post.setContent(content);
         PostHashTag postHashTag = new PostHashTag();
         postHashTag.setTag(tag);
-        post.addHashTag(postHashTag);
+        post.addHashTag(postHashTag.getTag());
         return post;
     }
 

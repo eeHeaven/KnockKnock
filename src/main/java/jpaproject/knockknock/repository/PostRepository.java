@@ -38,13 +38,17 @@ public class PostRepository {
         return posts;
     }
 
-    public List<PostHashTag> findPostHashTags(Long id){
-        List<PostHashTag> postTags = queryFactory.selectFrom(postHashTag)
-                .innerJoin(post).on(post.id.eq(postHashTag.post.id))
-                .where(post.id.eq(id))
+    public List<Post> findByMember(Long memberId){
+
+        List<Post> posts = queryFactory.selectFrom(post)
+                .where(post.postwriter.id.eq(memberId))
+                .orderBy(post.timestamp.desc())
                 .fetch();
-        return postTags;
+        return posts;
     }
+
+
+
 
 
 }

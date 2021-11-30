@@ -31,10 +31,10 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public Member LoginMemberReturn(String id, String pw){
+    public Member LoginMemberReturn(LoginInfo loginInfo){
         return em.createQuery("select m from Member m where m.userId = :id and m.userPassword = :pw",Member.class)
-                .setParameter("id",id)
-                .setParameter("pw",pw)
+                .setParameter("id",loginInfo.id)
+                .setParameter("pw",loginInfo.password)
                 .getSingleResult();
     }
 

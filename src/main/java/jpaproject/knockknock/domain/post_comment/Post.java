@@ -44,9 +44,11 @@ public class Post {
         this.getPostcomments().add(comment);
         comment.setPost(this);
     }
-    public void addHashTag(PostHashTag hashTag){
-        hashTag.setPost(this);
-        this.getPostTags().add(hashTag);
+    public void addHashTag(String tag){
+        PostHashTag postHashTag = new PostHashTag();
+        postHashTag.setTag(tag);
+        postHashTag.setPost(this);
+        this.getPostTags().add(postHashTag);
     }
     // 생성메서드
     public static Post CreatePost(Member writer, String title, String content){

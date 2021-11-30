@@ -31,7 +31,7 @@ public class PostHashTag {
     }
 
     //생성메서드
-    public PostHashTag CreatePostHashTag(String tag, HashTag hashTag){
+    public PostHashTag createPostHashTag(String tag, HashTag hashTag){
         PostHashTag postHashTag = new PostHashTag();
         postHashTag.setTag(tag);
         postHashTag.setHashTag(hashTag);

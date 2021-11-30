@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -26,6 +27,9 @@ public class Comment {
 
     private String content;
 
+    @Column(name="comment_timedate")
+    private LocalDateTime timestamp;
+
     // 비즈니스 로직설계
     //1. 양방향 연관관계 관련 로직
     public void setCommentwriter(Member member){
@@ -35,6 +39,7 @@ public class Comment {
     //생성메서드
     public Comment CreateComment(Member writer, Post post,String content){
         Comment comment = new Comment();
+        comment.setTimestamp(LocalDateTime.now());
         comment.setPost(post);
         comment.setCommentwriter(writer);
         comment.setContent(content);

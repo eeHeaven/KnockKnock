@@ -20,10 +20,5 @@ public class HashTag {
     @OneToMany(mappedBy = "hashTag")
     private List<PostHashTag> postHashTags = new ArrayList<>();
 
-    //생성메서드
-    public HashTag createTag(String tag){
-        HashTag hashTag = new HashTag();
-        hashTag.setTag(tag);
-        return hashTag;
-    }
+
 }
