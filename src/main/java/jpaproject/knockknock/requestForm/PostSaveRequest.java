@@ -1,4 +1,4 @@
-package jpaproject.knockknock;
+package jpaproject.knockknock.requestForm;
 
 import lombok.Data;
 
@@ -7,5 +7,5 @@ public class PostSaveRequest {
     private String title;
     private String content;
 
-    private String hashTag;
+    private String[] hashTags;
 }

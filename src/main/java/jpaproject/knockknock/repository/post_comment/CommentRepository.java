@@ -1,4 +1,4 @@
-package jpaproject.knockknock.repository;
+package jpaproject.knockknock.repository.post_comment;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpaproject.knockknock.domain.QMember;
@@ -7,14 +7,18 @@ import jpaproject.knockknock.domain.post_comment.QComment;
 import jpaproject.knockknock.domain.post_comment.QPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class CommentRepository {
 
+    @PersistenceContext
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
@@ -33,6 +37,12 @@ public class CommentRepository {
                 .orderBy(comment.timestamp.desc())
                 .fetch();
         return comments;
+    }
+
+    @Transactional
+    public void remove(Comment comment){
+        em.remove(comment);
+        em.flush();
     }
 
 }

@@ -21,10 +21,10 @@ public class Post {
     private String title;
     private String content;
 
-    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post")
     private List<PostHashTag> postTags = new ArrayList<PostHashTag>();
 
-    @OneToMany(mappedBy="post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="post")
     private List<Comment> postcomments = new ArrayList<Comment>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,13 +40,8 @@ public class Post {
         this.postwriter = member;
         member.getPosts().add(this);
     }
-    public void addComment(Comment comment){
-        this.getPostcomments().add(comment);
-        comment.setPost(this);
-    }
-    public void addHashTag(String tag){
-        PostHashTag postHashTag = new PostHashTag();
-        postHashTag.setTag(tag);
+
+    public void addPostHashTag(PostHashTag postHashTag){
         postHashTag.setPost(this);
         this.getPostTags().add(postHashTag);
     }

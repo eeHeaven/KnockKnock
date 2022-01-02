@@ -36,6 +36,12 @@ public class Comment {
         this.commentwriter = member;
         member.getMembercomments().add(this);
     }
+
+    public void addToPost(Post post){
+        this.post = post;
+        post.getPostcomments().add(this);
+    }
+
     //생성메서드
     public Comment CreateComment(Member writer, Post post,String content){
         Comment comment = new Comment();

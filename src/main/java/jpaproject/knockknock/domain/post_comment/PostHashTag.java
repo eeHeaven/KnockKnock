@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -19,23 +21,13 @@ public class PostHashTag {
     @JoinColumn(name="post_id")
     private Post post;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="tag_id")
-    private HashTag hashTag;
+    private HashTag hashtag;
 
-    //비즈니스 로직
-    //1.연관관계 관련 로직
-
-    public void setHashTag(HashTag hashTag){
-        this.hashTag = hashTag;
-    }
-
-    //생성메서드
-    public PostHashTag createPostHashTag(String tag, HashTag hashTag){
+    public void hashTagSet(HashTag hashTag){
         PostHashTag postHashTag = new PostHashTag();
-        postHashTag.setTag(tag);
-        postHashTag.setHashTag(hashTag);
-        return postHashTag;
+        hashTag.getPosthashtags().add(this);
+        this.setHashtag(hashTag);
     }
-
 }

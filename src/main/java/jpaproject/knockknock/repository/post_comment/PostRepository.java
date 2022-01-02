@@ -1,4 +1,4 @@
-package jpaproject.knockknock.repository;
+package jpaproject.knockknock.repository.post_comment;
 
 import com.querydsl.core.support.FetchableQueryBase;
 import com.querydsl.core.support.QueryBase;
@@ -8,6 +8,7 @@ import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class PostRepository {
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
-    public void save(Post post){em.persist(post);}
+    public Post save(Post post){em.persist(post); return post;}
     public Post findOneById(Long id){return em.find(Post.class, id);}
     public List<Post> findAll(){return em.createQuery("select p from Post p",Post.class).getResultList();}
 
@@ -45,6 +46,9 @@ public class PostRepository {
                 .orderBy(post.timestamp.desc())
                 .fetch();
         return posts;
+    }
+
+    public void remove(Post post){ em.remove(post);
     }
 
 

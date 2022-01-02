@@ -17,8 +17,7 @@ public class HashTag {
 
     private String tag;
 
-    @OneToMany(mappedBy = "hashTag")
-    private List<PostHashTag> postHashTags = new ArrayList<>();
-
+    @OneToMany(mappedBy = "hashtag")
+    private List<PostHashTag> posthashtags = new ArrayList<>();
 
 }

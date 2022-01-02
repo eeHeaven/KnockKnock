@@ -1,4 +1,4 @@
-package jpaproject.knockknock.repository;
+package jpaproject.knockknock.requestForm;
 
 import lombok.Getter;
 import lombok.Setter;
