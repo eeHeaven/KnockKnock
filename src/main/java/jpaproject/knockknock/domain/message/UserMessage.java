@@ -16,6 +16,8 @@ public class UserMessage {
     private Long id;
     private String message;
 
+    private Long senderId;
+    private Long recieverId;
 
     @Column(name="message_timedate")
     private LocalDateTime timestamp;
@@ -25,6 +27,11 @@ public class UserMessage {
       private MessageDialog messageDialog;
 
       //비즈니스로직
+
+    public void addMessageTo(MessageDialog messageDialog){
+        messageDialog.getMessageList().add(this);
+        this.setMessageDialog(messageDialog);
+    }
     //생성로직
     public UserMessage writeNewMessage(String message){
         UserMessage userMessage = new UserMessage();

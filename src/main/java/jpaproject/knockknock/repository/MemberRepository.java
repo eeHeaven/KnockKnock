@@ -28,10 +28,13 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public List<Member> findByNickName(String nickname){
-        return em.createQuery("select m from Member m where m.nickName = :nickname",Member.class)
+    public Member findByNickName(String nickname){
+       try{ return em.createQuery("select m from Member m where m.nickName = :nickname",Member.class)
                 .setParameter("nickname",nickname)
-                .getResultList();
+                .getSingleResult();}
+       catch(NoResultException nre){
+           return null;
+       }
     }
 
     public Member LoginMemberReturn(String id, String password){

@@ -26,7 +26,9 @@ public class Report {
     //1. 연관관계 관련 로직
     public void setObjectMember(Member member){
         this.objectMember = member;
-        member.getReports().add(this);
+       int count =  member.getReportCount();
+       member.setReportCount(++count);
+       if(count >=5) member.setBlocked(true);
     }
     // 생성메서드
     public Report CreateReport(Member member, ReportReason reason, String detailReason){

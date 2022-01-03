@@ -1,7 +1,9 @@
 package jpaproject.knockknock.service.post_comment;
 
+import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.PostHashTag;
+import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.CommentRepository;
 import jpaproject.knockknock.requestForm.PostSaveRequest;
 import jpaproject.knockknock.domain.post_comment.HashTag;
@@ -23,6 +25,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Post save(PostSaveRequest postSaveRequest) {
@@ -31,6 +34,9 @@ public class PostService {
         post.setTitle(postSaveRequest.getTitle());
         post.setContent(postSaveRequest.getContent());
         post.setTimestamp(LocalDateTime.now());
+
+        Member writer = memberRepository.findOne(postSaveRequest.getWriterId());
+        post.setPostWriter(writer);
        Post savedPost =  postRepository.save(post);
 
         // 2. post에 추가한 posthashTag들 가져오기

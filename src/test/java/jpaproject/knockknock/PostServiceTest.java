@@ -1,9 +1,11 @@
 package jpaproject.knockknock;
 
+import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.HashTag;
 import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.domain.post_comment.PostHashTag;
+import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.CommentRepository;
 import jpaproject.knockknock.requestForm.CommentRequest;
 import jpaproject.knockknock.requestForm.PostSaveRequest;
@@ -30,7 +32,6 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-@Rollback(true)
 public class PostServiceTest {
 
    private final Logger logger = LoggerFactory.getLogger(PostServiceTest.class);
@@ -45,27 +46,46 @@ public class PostServiceTest {
     HashTagRepository hashTagRepository;
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
+    @Test
+    public void 게시글작성(){
+        //given
+        PostSaveRequest postSaveRequest = new PostSaveRequest();
+        postSaveRequest.setTitle("새 글입니다");
+        postSaveRequest.setContent("반가워요");
+        String[] tags = {"인사","소개","새글","테스트"};
+        Member writer = memberRepository.findByNickName("테스트멤버1");
+        postSaveRequest.setWriterId(writer.getId());
+        postSaveRequest.setHashTags(tags);
+        //when
+        Post savedPost =  postService.save(postSaveRequest);
+        //then
+        Assertions.assertThat(writer.getPosts().size()).isEqualTo(3);
+        Assertions.assertThat(savedPost.getPostwriter()).isEqualTo(writer);
+    }
     @Test
     public void 게시글삭제(){
         //given
         PostSaveRequest postSaveRequest = new PostSaveRequest();
         postSaveRequest.setTitle("새 글입니다");
         postSaveRequest.setContent("반가워요");
-        String[] tags = {"인사","소개","새글","테스트"};
+        Member member = memberRepository.findByNickName("테스트멤버1");
+        postSaveRequest.setWriterId(member.getId());
+        String[] tags = {"인사","게시글삭제"};
         postSaveRequest.setHashTags(tags);
        Post savedPost =  postService.save(postSaveRequest);
         CommentRequest commentRequest = new CommentRequest();
         commentRequest.setComment("this comment should be deleted");
         commentRequest.setPostId(savedPost.getId());
+        commentRequest.setWriterId(member.getId());
         Comment targetComment = commentService.save(commentRequest);
-
         //when
         postService.delete(savedPost.getId());
-
         //then
         Post targetPost = postRepository.findOneById(savedPost.getId());
-        HashTag targetHashTag = hashTagRepository.findByTag("테스트");
+        HashTag targetHashTag = hashTagRepository.findByTag("게시글삭제");
         HashTag targetHashTag2 = hashTagRepository.findByTag("인사");
         List<PostHashTag> targetlist = hashTagRepository.findPostHashTags(targetHashTag2.getId());
         Assertions.assertThat(targetPost).isNull();

@@ -1,7 +1,9 @@
 package jpaproject.knockknock.service.post_comment;
 
+import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.Post;
+import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.CommentRepository;
 import jpaproject.knockknock.repository.post_comment.PostRepository;
 import jpaproject.knockknock.requestForm.CommentRequest;
@@ -18,17 +20,20 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     //댓글 저장
     @Transactional
     public Comment save(CommentRequest commentRequest){
        String commentString =  commentRequest.getComment();
         Post post = postRepository.findOneById(commentRequest.getPostId());
+        Member writer = memberRepository.findOne(commentRequest.getWriterId());
 
         Comment comment = new Comment();
         comment.setTimestamp(LocalDateTime.now());
         comment.setContent(commentString);
         comment.addToPost(post);
+        comment.setCommentwriter(writer);
         commentRepository.save(comment);
 
         return comment;

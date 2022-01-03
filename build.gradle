@@ -26,6 +26,8 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile "com.mysema.querydsl:querydsl-jpa:3.6.3"
+    compile "com.mysema.querydsl:querydsl-apt:3.6.3:jpa"
     implementation 'junit:junit:4.13.1'
     implementation 'org.projectlombok:lombok:1.18.18'
     compileOnly 'org.projectlombok:lombok'

@@ -29,13 +29,10 @@ public class Member {
     @OneToMany(mappedBy = "postwriter")
     private List<Post> posts = new ArrayList<Post>();
 
-    @OneToMany(mappedBy = "objectMember", cascade = CascadeType.ALL)
-    private List<Report> reports = new ArrayList<Report>();
-
     private boolean isBlocked;
     private int reportCount;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<MessageDialog> messagesWithUser = new ArrayList<>();
 
     @OneToMany(mappedBy="commentwriter")
@@ -60,14 +57,7 @@ public class Member {
     public void viewPost(){
         this.sharePoint = this.getSharePoint() - 5;
     }
-    public int getReportCount(){
-        int reportCount = this.reports.size();
-        return reportCount;
-    }
 
-    public void block(){
-        if(this.reportCount>3){
-            this.isBlocked = true;
-        }
-    }
+
+
 }

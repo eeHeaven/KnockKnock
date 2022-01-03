@@ -6,6 +6,6 @@ import lombok.Data;
 public class PostSaveRequest {
     private String title;
     private String content;
-
+    private Long writerId;
     private String[] hashTags;
 }

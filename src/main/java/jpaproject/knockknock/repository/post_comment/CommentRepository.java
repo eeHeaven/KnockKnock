@@ -39,10 +39,9 @@ public class CommentRepository {
         return comments;
     }
 
-    @Transactional
     public void remove(Comment comment){
         em.remove(comment);
-        em.flush();
+        //em.flush();
     }
 
 }
