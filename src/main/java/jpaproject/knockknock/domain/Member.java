@@ -4,19 +4,22 @@ import jpaproject.knockknock.domain.message.MessageDialog;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.domain.report.Report;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="member")
 @Getter
 @Setter
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
     private Long id;
 
@@ -39,15 +42,13 @@ public class Member {
     private List<Comment> membercomments = new ArrayList<Comment>();
 
     //생성 메서드
-    public Member createMember(String nickName, String userId, String userPassword){
-        Member member = new Member();
-        member.setNickName(nickName);
-        member.setUserId(userId);
-        member.setUserPassword(userPassword);
-        member.setSharePoint(100);
-        member.setBlocked(false);
-        member.setReportCount(0);
-        return member;
+    public Member(String nickName, String userId, String userPassword){
+        this.nickName = nickName;
+        this.sharePoint = 100;
+        this.isBlocked = false;
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.reportCount = 0;
     }
 
     // 비즈니스 로직 - 단순연산 데이터관리

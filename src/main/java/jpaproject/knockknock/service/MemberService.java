@@ -17,17 +17,12 @@ public class MemberService {
 
     //회원가입
     @Transactional(readOnly = false)
-    public Member signIn(SignInRequest signInRequest){
-        String userId = signInRequest.getId();
+    public Member signIn(Member member){
+        String userId = member.getUserId();
         validateSameIdExsist(userId);
-        String userPassword = signInRequest.getPassword();
-        String nickname = signInRequest.getNickname();
+        String userPassword = member.getUserPassword();
+        String nickname = member.getNickName();
         validateSameNickNameExsist(nickname);
-
-        Member member = new Member();
-        member.setUserId(userId);
-        member.setUserPassword(userPassword);
-        member.setNickName(nickname);
 
         memberRepository.save(member);
         return member;

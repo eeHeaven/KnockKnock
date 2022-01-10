@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -27,31 +28,22 @@ public class MemberServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
+
     @Before
     public void 초기데이터설정(){
-        SignInRequest signInRequest1 = new SignInRequest();
-        signInRequest1.setId("testmember1");
-        signInRequest1.setPassword("1234");
-        signInRequest1.setNickname("테스트1");
-        Member member1 = memberService.signIn(signInRequest1);
-
-        SignInRequest signInRequest2 = new SignInRequest();
-        signInRequest2.setId("testmember2");
-        signInRequest2.setPassword("1234");
-        signInRequest2.setNickname("테스트2");
-        Member member2 = memberService.signIn(signInRequest2);
+        Member member = new Member("테스트1","testmember1","1234");
+        Member member2 = new Member("테스트2","testmember2","1234");
+        memberService.signIn(member);
+        memberService.signIn(member2);
     }
 
     @Test
     public void 회원가입(){
         //given
-        SignInRequest signInRequest = new SignInRequest();
-        signInRequest.setId("newmember1");
-        signInRequest.setPassword("1234");
-        signInRequest.setNickname("테스트");
+        Member newmember = new Member("테스트","newmember1","1234");
 
         //when
-        Member member = memberService.signIn(signInRequest);
+        Member member = memberService.signIn(newmember);
         //then
         Member member1 = memberRepository.findByUserId("newmember1");
         Member member2 = memberRepository.findOne(member.getId());
@@ -61,12 +53,9 @@ public class MemberServiceTest {
     @Test(expected = IllegalStateException.class)
     public void 중복회원가입안됨(){
         //given
-        SignInRequest signInRequest = new SignInRequest();
-        signInRequest.setId("testmember1");
-        signInRequest.setPassword("1234");
-        signInRequest.setNickname("테스트");
+        Member newmember = new Member("테스트","testmember1","1234");
         //when
-        Member member = memberService.signIn(signInRequest);
+        Member member = memberService.signIn(newmember);
         //then
         Assertions.fail("예외 발생 안됨");
     }
