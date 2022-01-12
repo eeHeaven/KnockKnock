@@ -40,8 +40,8 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-//def querydslDir = 'src/main/generated'
-def querydslDir = "$buildDir/generated/querydsl" // (3)
+def querydslDir = 'src/main/generated'
+//def querydslDir = "$buildDir/generated/querydsl" // (3)
 
 querydsl { // (4)
     library = "com.querydsl:querydsl-apt"
