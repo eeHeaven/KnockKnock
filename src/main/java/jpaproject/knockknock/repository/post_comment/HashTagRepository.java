@@ -1,9 +1,9 @@
 package jpaproject.knockknock.repository.post_comment;
 
-import com.querydsl.core.support.FetchableQueryBase;
-import com.querydsl.core.support.QueryBase;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+//import com.querydsl.core.support.FetchableQueryBase;
+//import com.querydsl.core.support.QueryBase;
+//import com.querydsl.jpa.impl.JPAQuery;
+//import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpaproject.knockknock.domain.post_comment.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HashTagRepository {
     private final EntityManager em;
-    private final JPAQueryFactory queryFactory;
+  //  private final JPAQueryFactory queryFactory;
 
     public PostHashTag save(PostHashTag postHashTag){em.persist(postHashTag); return postHashTag;}
     public HashTag save(HashTag hashTag){em.persist(hashTag);return hashTag;}
@@ -33,17 +33,17 @@ public class HashTagRepository {
             return null;
         }
     }
-    QPost post = QPost.post;
-    QPostHashTag postHashTag = QPostHashTag.postHashTag;
-    QHashTag hashTag = QHashTag.hashTag;
+  //  QPost post = QPost.post;
+  //  QPostHashTag postHashTag = QPostHashTag.postHashTag;
+  //  QHashTag hashTag = QHashTag.hashTag;
 
-   public List<HashTag> findBySearch(String input){
-        try{List<HashTag> tags = queryFactory.selectFrom(hashTag)
-                .where(hashTag.tag.like(input))
-                .fetch();
-        return tags;}
-        catch(NoResultException nre){return null;}
-   }
+//   public List<HashTag> findBySearch(String input){
+//        try{List<HashTag> tags = queryFactory.selectFrom(hashTag)
+//                .where(hashTag.tag.like(input))
+//                .fetch();
+//        return tags;}
+//        catch(NoResultException nre){return null;}
+//   }
 
    public List<PostHashTag> findPostHashTags(Long id){
        try{
