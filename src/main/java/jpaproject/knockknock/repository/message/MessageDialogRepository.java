@@ -22,6 +22,7 @@ public class MessageDialogRepository {
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
+
     QUserMessage userMessage = QUserMessage.userMessage;
     QMessageDialog messageDialog = QMessageDialog.messageDialog;
     QMember member = QMember.member;
