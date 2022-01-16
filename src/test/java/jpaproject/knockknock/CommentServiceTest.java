@@ -7,10 +7,14 @@ import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.CommentRepository;
 import jpaproject.knockknock.repository.post_comment.PostRepository;
 import jpaproject.knockknock.requestForm.CommentRequest;
+import jpaproject.knockknock.requestForm.PostSaveRequest;
+import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.post_comment.CommentService;
 import jpaproject.knockknock.service.post_comment.PostService;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +27,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-@Rollback(false)
+@Rollback(true)
 public class CommentServiceTest {
 
     @Autowired
@@ -37,7 +41,21 @@ public class CommentServiceTest {
     MemberRepository memberRepository;
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    MemberService memberService;
 
+    @Before
+    public void 초기데이터설정(){
+        PostSaveRequest postSaveRequest = new PostSaveRequest();
+        postSaveRequest.setContent("테스트용 게시글");
+        String[] tags = {"테스트"};
+        postSaveRequest.setHashTags(tags);
+        postSaveRequest.setTitle("테스트 중");
+
+        Member member = new Member("테스트멤버1","testmember1","1234");
+        memberService.signIn(member);
+
+    }
     @Test
     public void 댓글달기(){
         //given
