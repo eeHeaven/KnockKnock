@@ -1,7 +1,4 @@
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
     url: jdbc:mariadb://database-1.czosrniuxuqh.ap-northeast-2.rds.amazonaws.com:3306/knockknock
     username: eeheaven
@@ -9,7 +6,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
