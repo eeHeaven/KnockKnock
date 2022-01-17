@@ -22,6 +22,10 @@ repositories {
 jar {
     enabled = false
 }
+bootJar{
+    enabled(true)
+    archiveClassifier.set("")
+}
 
 dependencies {
     compile("org.mariadb.jdbc:mariadb-java-client")
