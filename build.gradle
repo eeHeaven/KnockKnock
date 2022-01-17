@@ -19,6 +19,9 @@ configurations {
 repositories {
     mavenCentral()
 }
+jar {
+    enabled = false
+}
 
 dependencies {
     compile("org.mariadb.jdbc:mariadb-java-client")
