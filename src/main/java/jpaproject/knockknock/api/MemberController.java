@@ -3,6 +3,7 @@ package jpaproject.knockknock.api;
 import com.sun.istack.NotNull;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.repository.MemberRepository;
+import jpaproject.knockknock.requestForm.LoginInfo;
 import jpaproject.knockknock.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -21,10 +23,10 @@ public class MemberController {
     private final MemberRepository memberRepository;
 
     //회원가입
-    @PostMapping("api/member")
-    public MemberBasicInfo signin(@RequestBody @Valid SignInForm form){
+    @PostMapping(value = "api/member")
+    public MemberBasicInfo signup(@RequestBody @Valid SignInForm form){
         Member newMember = new Member(form.getNickname(),form.getMemberId(),form.getMemberPassword());
-        memberService.signIn(newMember);
+        memberService.signUp(newMember);
         MemberBasicInfo response = new MemberBasicInfo(newMember.getNickName(),newMember.getUserId());
         return response;
     }
@@ -57,7 +59,13 @@ public class MemberController {
         MemberBasicInfo memberResponse = new MemberBasicInfo(member.getNickName(),member.getUserId());
         return memberResponse;
     }
-    
+
+    @GetMapping("api/login/{id}/{pw}")
+    public MemberBasicInfo login(@PathVariable("id") String id, @PathVariable("pw") String pw){
+        Member member = memberService.login(new LoginInfo(id,pw));
+        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getNickName(),member.getUserId());
+        return memberBasicInfo;
+    }
     @Data
     @AllArgsConstructor
     static class Result<T>{

@@ -8,4 +8,9 @@ public class LoginInfo {
 
     String id;
     String password;
+
+    public LoginInfo(String id, String password){
+        this.id = id;
+        this.password = password;
+    }
 }

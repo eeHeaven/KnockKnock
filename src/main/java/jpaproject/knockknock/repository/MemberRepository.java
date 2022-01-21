@@ -29,7 +29,7 @@ public class MemberRepository {
     }
 
     public Member findByNickName(String nickname){
-       try{ return em.createQuery("select m from Member m where m.nickName = :nickname",Member.class)
+       try{return em.createQuery("select m from Member m where m.nickName = :nickname",Member.class)
                 .setParameter("nickname",nickname)
                 .getSingleResult();}
        catch(NoResultException nre){
@@ -52,6 +52,18 @@ public class MemberRepository {
         return em.createQuery("select m from Member m where m.userId = :id",Member.class)
                 .setParameter("id",id)
                 .getSingleResult();}
+        catch(NoResultException nre){
+            return null;
+        }
+    }
+
+    public Member findByLoginInfo(String id, String pw){
+        try{
+            return em.createQuery("select m from Member m where m.userId =: id and m.userPassword =:pw",Member.class)
+                    .setParameter("id",id)
+                    .setParameter("pw",pw)
+                    .getSingleResult();
+        }
         catch(NoResultException nre){
             return null;
         }

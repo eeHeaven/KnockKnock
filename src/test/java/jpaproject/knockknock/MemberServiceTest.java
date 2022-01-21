@@ -12,14 +12,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Transactional
+@Rollback(false)
 public class MemberServiceTest {
 
     @Autowired
@@ -31,21 +35,21 @@ public class MemberServiceTest {
 
     @Before
     public void 초기데이터설정(){
-        Member member = new Member("테스트1","testmember1","1234");
-        Member member2 = new Member("테스트2","testmember2","1234");
-        memberService.signIn(member);
-        memberService.signIn(member2);
+        Member member = new Member("테스트5","testmember5","1234");
+        Member member2 = new Member("테스트6","testmember6","1234");
+        memberService.signUp(member);
+        memberService.signUp(member2);
     }
 
     @Test
     public void 회원가입(){
         //given
-        Member newmember = new Member("테스트","newmember1","1234");
+        Member newmember = new Member("테스트7","newmember7","1234");
 
         //when
-        Member member = memberService.signIn(newmember);
+        Member member = memberService.signUp(newmember);
         //then
-        Member member1 = memberRepository.findByUserId("newmember1");
+        Member member1 = memberRepository.findByUserId("newmember7");
         Member member2 = memberRepository.findOne(member.getId());
         Assertions.assertThat(member1).isEqualTo(member2);
     }
@@ -55,7 +59,7 @@ public class MemberServiceTest {
         //given
         Member newmember = new Member("테스트","testmember1","1234");
         //when
-        Member member = memberService.signIn(newmember);
+        Member member = memberService.signUp(newmember);
         //then
         Assertions.fail("예외 발생 안됨");
     }
@@ -63,9 +67,7 @@ public class MemberServiceTest {
     @Test
     public void 로그인(){
         //given
-        LoginInfo loginInfo = new LoginInfo();
-        loginInfo.setId("testmember1");
-        loginInfo.setPassword("1234");
+        LoginInfo loginInfo = new LoginInfo("testmember1","1234");
         //when
         Member member = memberService.login(loginInfo);
         //then
@@ -76,9 +78,7 @@ public class MemberServiceTest {
     @Test(expected = IllegalStateException.class)
     public void 로그인실패(){
         //given
-        LoginInfo loginInfo = new LoginInfo();
-        loginInfo.setId("testmember1");
-        loginInfo.setPassword("5678");
+        LoginInfo loginInfo = new LoginInfo("testmember1","5678");
         //when
         Member member = memberService.login(loginInfo);
         //then

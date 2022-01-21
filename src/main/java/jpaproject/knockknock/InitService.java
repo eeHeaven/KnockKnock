@@ -1,13 +1,9 @@
 package jpaproject.knockknock;
 
+
+
 import jpaproject.knockknock.domain.Member;
-import jpaproject.knockknock.domain.post_comment.Post;
-import jpaproject.knockknock.requestForm.CommentRequest;
-import jpaproject.knockknock.requestForm.PostSaveRequest;
-import jpaproject.knockknock.requestForm.SignInRequest;
 import jpaproject.knockknock.service.MemberService;
-import jpaproject.knockknock.service.post_comment.CommentService;
-import jpaproject.knockknock.service.post_comment.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +16,12 @@ import javax.persistence.EntityManager;
 public class InitService {
 
     private final EntityManager em;
-    private final PostService postService;
-    private final CommentService commentService;
     private final MemberService memberService;
 
     public void dbInit1(){
+
+//        Member member1 = new Member("테스트멤버1","testmember1","1234");
+//        memberService.signIn(member1);
 
 //        Member member1 = new Member();
 //        SignInRequest signInRequest1 = new SignInRequest();
