@@ -35,13 +35,13 @@ public class PostService {
         post.setContent(postSaveRequest.getContent());
         post.setTimestamp(LocalDateTime.now());
 
-        Member writer = memberRepository.findOne(postSaveRequest.getWriterId());
+        Member writer = memberRepository.findByUserId(postSaveRequest.getWriterId());
         post.setPostWriter(writer);
        Post savedPost =  postRepository.save(post);
 
         // 2. post에 추가한 posthashTag들 가져오기
-        String[] hashTags = postSaveRequest.getHashTags();
-        HashTag[] postHashTags = new HashTag[hashTags.length];
+        List<String> hashTags = postSaveRequest.getHashTags();
+        HashTag[] postHashTags = new HashTag[hashTags.size()];
         int index = 0;
         for(String eachhashTag: hashTags){
             HashTag hashTag = hashTagRepository.findByTag(eachhashTag);
@@ -81,6 +81,16 @@ public class PostService {
 
         // 포스트 삭제
         postRepository.remove(post);
+    }
+
+    //회원의 포스트 목록 가져오기
+    public List<Post> getUserPosts(String userId){
+       return postRepository.findByMember(userId);
+    }
+
+    //전체 포스트 목록 가져오기
+    public List<Post> getPosts(){
+        return postRepository.findAll();
     }
 
 

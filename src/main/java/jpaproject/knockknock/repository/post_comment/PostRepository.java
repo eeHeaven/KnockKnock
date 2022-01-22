@@ -12,7 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
+ import javax.persistence.NoResultException;
+ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -40,13 +41,16 @@ public class PostRepository {
         return posts;
     }
 
-    public List<Post> findByMember(Long memberId){
+    public List<Post> findByMember(String memberId){
 
-        List<Post> posts = queryFactory.selectFrom(post)
-                .where(post.postwriter.id.eq(memberId))
+       try{ List<Post> posts = queryFactory.selectFrom(post)
+                .where(post.postwriter.userId.eq(memberId))
                 .orderBy(post.timestamp.desc())
                 .fetch();
-        return posts;
+        return posts;}
+       catch(NoResultException nre){
+           return null;
+       }
     }
 
     public void remove(Post post){ em.remove(post);

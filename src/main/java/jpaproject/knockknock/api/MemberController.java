@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
     //회원가입
     @PostMapping(value = "api/member")
@@ -53,9 +52,9 @@ public class MemberController {
     }
 
     //회원 정보 조회(아이디를 통해)
-    @GetMapping("api/member/{id}")
-    public MemberBasicInfo viewAllMember(@PathVariable("id") Long id){
-        Member member = memberRepository.findOne(id);
+    @GetMapping("api/member/{userid}")
+    public MemberBasicInfo viewAllMember(@PathVariable("userid") String id){
+        Member member = memberService.findByUserId(id);
         MemberBasicInfo memberResponse = new MemberBasicInfo(member.getNickName(),member.getUserId());
         return memberResponse;
     }

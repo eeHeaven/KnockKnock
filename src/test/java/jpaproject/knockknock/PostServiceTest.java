@@ -22,11 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -55,9 +55,13 @@ public class PostServiceTest {
         PostSaveRequest postSaveRequest = new PostSaveRequest();
         postSaveRequest.setTitle("새 글입니다");
         postSaveRequest.setContent("반가워요");
-        String[] tags = {"인사","소개","새글","테스트"};
+        List<String> tags = new ArrayList<>();
+        tags.add("인사");
+        tags.add("소개");
+        tags.add("새글");
+        tags.add("테스트");
         Member writer = memberRepository.findByNickName("테스트멤버1");
-        postSaveRequest.setWriterId(writer.getId());
+        postSaveRequest.setWriterId(writer.getUserId());
         postSaveRequest.setHashTags(tags);
         //when
         Post savedPost =  postService.save(postSaveRequest);
@@ -72,8 +76,10 @@ public class PostServiceTest {
         postSaveRequest.setTitle("새 글입니다");
         postSaveRequest.setContent("반가워요");
         Member member = memberRepository.findByNickName("테스트멤버1");
-        postSaveRequest.setWriterId(member.getId());
-        String[] tags = {"인사","게시글삭제"};
+        postSaveRequest.setWriterId(member.getUserId());
+        List<String> tags = new ArrayList<>();
+        tags.add("인사");
+        tags.add("게시글삭제");
         postSaveRequest.setHashTags(tags);
        Post savedPost =  postService.save(postSaveRequest);
         CommentRequest commentRequest = new CommentRequest();

@@ -45,15 +45,14 @@ public class Post {
         postHashTag.setPost(this);
         this.getPostTags().add(postHashTag);
     }
+    public Post(){}
     // 생성메서드
-    public static Post CreatePost(Member writer, String title, String content){
-        Post post = new Post();
+    public Post(Member writer, String title, String content){
         LocalDateTime time = LocalDateTime.now();
-        post.setTimestamp(time);
-        post.setPostWriter(writer);
-        post.setTitle(title);
-        post.setContent(content);
-        return post;
+        this.setTimestamp(time);
+        this.setPostWriter(writer);
+        this.setTitle(title);
+        this.setContent(content);
     }
 
 }

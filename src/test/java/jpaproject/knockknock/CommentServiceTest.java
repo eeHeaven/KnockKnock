@@ -14,7 +14,6 @@ import jpaproject.knockknock.service.post_comment.PostService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +21,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -48,12 +48,13 @@ public class CommentServiceTest {
     public void 초기데이터설정(){
         PostSaveRequest postSaveRequest = new PostSaveRequest();
         postSaveRequest.setContent("테스트용 게시글");
-        String[] tags = {"테스트"};
+        List<String> tags = new ArrayList<>();
+        tags.add("테스트");
         postSaveRequest.setHashTags(tags);
         postSaveRequest.setTitle("테스트 중");
 
         Member member = new Member("테스트멤버1","testmember1","1234");
-        memberService.signIn(member);
+        memberService.signUp(member);
 
     }
     @Test
