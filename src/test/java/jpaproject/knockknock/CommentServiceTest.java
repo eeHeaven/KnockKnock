@@ -48,9 +48,7 @@ public class CommentServiceTest {
     public void 초기데이터설정(){
         PostSaveRequest postSaveRequest = new PostSaveRequest();
         postSaveRequest.setContent("테스트용 게시글");
-        List<String> tags = new ArrayList<>();
-        tags.add("테스트");
-        postSaveRequest.setHashTags(tags);
+        postSaveRequest.setHashTags("테스트");
         postSaveRequest.setTitle("테스트 중");
 
         Member member = new Member("테스트멤버1","testmember1","1234");
@@ -62,11 +60,9 @@ public class CommentServiceTest {
         //given
         List<Post> posts = postRepository.findByTag("테스트");
         Post post = posts.get(0);
-        CommentRequest commentRequest = new CommentRequest();
-        commentRequest.setComment("nice to meet you");
-        commentRequest.setPostId(post.getId());
         Member member = memberRepository.findByNickName("테스트멤버1");
-        commentRequest.setWriterId(member.getId());
+        CommentRequest commentRequest = new CommentRequest(member.getUserId(),post.getId(),"nice to meet you");
+
         //when
         commentService.save(commentRequest);
         //then
@@ -84,10 +80,7 @@ public class CommentServiceTest {
         List<Post> posts = postRepository.findByTag("영어");
         Member member = memberRepository.findByNickName("테스트멤버1");
         Post post = posts.get(0);
-        CommentRequest commentRequest = new CommentRequest();
-        commentRequest.setComment("this comment should be deleted");
-        commentRequest.setPostId(post.getId());
-        commentRequest.setWriterId(member.getId());
+        CommentRequest commentRequest = new CommentRequest(member.getUserId(),post.getId(),"this comment should be deleted");
         Comment savedComment= commentService.save(commentRequest);
         Long id = savedComment.getId();
         Comment target1 = commentRepository.findOne(savedComment.getId());

@@ -61,5 +61,14 @@ public class MemberService {
         return memberRepository.findByUserId(id);
     }
 
+    // 포인트 변화
+    @Transactional
+    public Member changeSharePoint(String id, int point){
+        Member member = memberRepository.findByUserId(id);
+        int memberpoint = member.getSharePoint();
+        member.setSharePoint(memberpoint+point);
+        return member;
+    }
+
 
 }

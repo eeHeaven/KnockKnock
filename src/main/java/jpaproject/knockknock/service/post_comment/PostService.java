@@ -40,17 +40,18 @@ public class PostService {
        Post savedPost =  postRepository.save(post);
 
         // 2. post에 추가한 posthashTag들 가져오기
-        List<String> hashTags = postSaveRequest.getHashTags();
-        HashTag[] postHashTags = new HashTag[hashTags.size()];
+        String hashTag = postSaveRequest.getHashTags();
+        String[] hashTags = hashTag.split(" ");
+        HashTag[] postHashTags = new HashTag[hashTags.length];
         int index = 0;
         for(String eachhashTag: hashTags){
-            HashTag hashTag = hashTagRepository.findByTag(eachhashTag);
-            if (hashTag == null) {
+            HashTag hashTageach = hashTagRepository.findByTag(eachhashTag);
+            if (hashTageach == null) {
                 HashTag newHashTag = new HashTag();
                 newHashTag.setTag(eachhashTag);
-                hashTag = hashTagRepository.save(newHashTag);
+                hashTageach = hashTagRepository.save(newHashTag);
             }
-            postHashTags[index++] = hashTag;
+            postHashTags[index++] = hashTageach;
         }
 
         // 3. post에 hashtag 달기
@@ -93,6 +94,7 @@ public class PostService {
         return postRepository.findAll();
     }
 
+    public Post getPostById(Long id){return postRepository.findOneById(id);}
 
 
 

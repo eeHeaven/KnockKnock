@@ -3,9 +3,7 @@ package jpaproject.knockknock.api.request;
 import lombok.Data;
 
 @Data
-public class PostWriteRequest {
+public class CommentWriteRequest {
 
-    String title;
     String content;
-    String hashtag;
 }

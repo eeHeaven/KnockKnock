@@ -4,8 +4,13 @@ import lombok.Data;
 
 @Data
 public class CommentRequest {
-    Long writerId;
+    String writerId;
     Long postId;
     String Comment;
 
+    public CommentRequest(String writerId, Long postId, String comment) {
+        this.writerId = writerId;
+        this.postId = postId;
+        Comment = comment;
+    }
 }

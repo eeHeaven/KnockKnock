@@ -9,11 +9,11 @@ public class PostSaveRequest {
     private String title;
     private String content;
     private String writerId;
-    private List<String> hashTags;
+    private String hashTags;
 
     public PostSaveRequest(){}
 
-    public PostSaveRequest(String title, String content, String writerId, List<String> hashTags) {
+    public PostSaveRequest(String title, String content, String writerId, String hashTags) {
         this.title = title;
         this.content = content;
         this.writerId = writerId;

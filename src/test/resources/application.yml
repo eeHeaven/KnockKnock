@@ -1,22 +1,21 @@
 spring:
+  #  h2:
+  #    console:
+  #      enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    #    url: jdbc:h2:mem:testdb
+    #  datasource:
+    url: jdbc:mariadb://database-1.czosrniuxuqh.ap-northeast-2.rds.amazonaws.com:3306/knockknock
+    username: eeheaven
+    password: 122573aws
+    driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      dialect: org.hibernate.dialect.H2Dialect
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-  profiles:
-    active: dev
 
 logging:
   level:

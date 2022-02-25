@@ -55,14 +55,10 @@ public class PostServiceTest {
         PostSaveRequest postSaveRequest = new PostSaveRequest();
         postSaveRequest.setTitle("새 글입니다");
         postSaveRequest.setContent("반가워요");
-        List<String> tags = new ArrayList<>();
-        tags.add("인사");
-        tags.add("소개");
-        tags.add("새글");
-        tags.add("테스트");
+
         Member writer = memberRepository.findByNickName("테스트멤버1");
         postSaveRequest.setWriterId(writer.getUserId());
-        postSaveRequest.setHashTags(tags);
+        postSaveRequest.setHashTags("인사");
         //when
         Post savedPost =  postService.save(postSaveRequest);
         //then
@@ -78,14 +74,10 @@ public class PostServiceTest {
         Member member = memberRepository.findByNickName("테스트멤버1");
         postSaveRequest.setWriterId(member.getUserId());
         List<String> tags = new ArrayList<>();
-        tags.add("인사");
-        tags.add("게시글삭제");
-        postSaveRequest.setHashTags(tags);
+
+        postSaveRequest.setHashTags("인사");
        Post savedPost =  postService.save(postSaveRequest);
-        CommentRequest commentRequest = new CommentRequest();
-        commentRequest.setComment("this comment should be deleted");
-        commentRequest.setPostId(savedPost.getId());
-        commentRequest.setWriterId(member.getId());
+        CommentRequest commentRequest = new CommentRequest(member.getUserId(), savedPost.getId(), "this comment should be deleted");
         Comment targetComment = commentService.save(commentRequest);
         //when
         postService.delete(savedPost.getId());

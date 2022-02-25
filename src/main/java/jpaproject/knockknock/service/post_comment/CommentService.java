@@ -27,7 +27,7 @@ public class CommentService {
     public Comment save(CommentRequest commentRequest){
        String commentString =  commentRequest.getComment();
         Post post = postRepository.findOneById(commentRequest.getPostId());
-        Member writer = memberRepository.findOne(commentRequest.getWriterId());
+        Member writer = memberRepository.findByUserId(commentRequest.getWriterId());
 
         Comment comment = new Comment();
         comment.setTimestamp(LocalDateTime.now());
