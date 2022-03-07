@@ -14,8 +14,14 @@ public class PostViewResponse {
     String title;
     String content;
     String postedTime;
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     List<CommentDto> commentlist;
     List<String> posthashtag;
+    String image;
 
     public PostViewResponse(Long id, String writernickname,String writerId, String title, String content, LocalDateTime postedTime) {
         this.id = id;

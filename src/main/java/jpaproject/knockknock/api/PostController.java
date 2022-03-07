@@ -7,19 +7,25 @@ import jpaproject.knockknock.api.response.PostSaveResponse;
 import jpaproject.knockknock.api.response.PostViewResponse;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.Comment;
+import jpaproject.knockknock.domain.post_comment.Image;
 import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.domain.post_comment.PostHashTag;
 import jpaproject.knockknock.requestForm.PostSaveRequest;
 import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.post_comment.CommentService;
+import jpaproject.knockknock.service.post_comment.ImageService;
 import jpaproject.knockknock.service.post_comment.PostService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,19 +38,29 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final ImageService imageService;
 
     //로그인 한 계정으로 게시글 작성하기
-    @PostMapping("api/post/{userId}")
-    public PostSaveResponse savePost(@RequestBody @Valid PostWriteRequest request ,
-                                     @PathVariable("userId") String writerId){
+    @PostMapping(value = "api/post/{userId}",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public PostSaveResponse savePost(@RequestPart("request") @Valid PostWriteRequest request , @RequestPart(required = false) MultipartFile image,
+                                     @PathVariable("userId") String writerId) throws IOException {
 
        PostSaveRequest postSaveRequest = new PostSaveRequest(request.getTitle(),request.getContent(),writerId,request.getHashtag());
        Post post = postService.save(postSaveRequest);
-       PostSaveResponse response = new PostSaveResponse(post.getId(),post.getPostwriter().getUserId(),post.getTitle(),post.getContent(),post.getTimestamp());
-       String[] hashtag = postSaveRequest.getHashTags().split(" ");
-       List<String> hashtags = new ArrayList<>();
-       for(String tag: hashtag)hashtags.add(tag);
-       response.setHashtag(hashtags);
+        PostSaveResponse response = new PostSaveResponse(post.getId(),post.getPostwriter().getUserId(),post.getTitle(),post.getContent(),post.getTimestamp());
+        String[] hashtag = postSaveRequest.getHashTags().split(" ");
+        List<String> hashtags = new ArrayList<>();
+        for(String tag: hashtag)hashtags.add(tag);
+        response.setHashtag(hashtags);
+       String imguri = null;
+      if(image != null) {
+          imguri =  imageService.saveImage(image,"knockknock",post);
+          List<String> imgs = new ArrayList<>();
+          imgs.add(imguri);
+        response.setImage(imgs);}
+      else {response.setImage(null);}
+
+       log.info("게시글 작성하기 실행");
        return response;
     }
 
@@ -52,7 +68,7 @@ public class PostController {
     @GetMapping("api/post/viewlist/{userId}")
     public Result viewPostofWriter(@PathVariable("userId")String writerId){
         List<Post> posts = postService.getUserPosts(writerId);
-        List<PostSaveResponse> dtos = posts.stream().map(p->new PostSaveResponse(p.getId(),p.getPostwriter().getUserId(),p.getTitle(),p.getContent(),p.getTimestamp()))
+        List<PostListShowResponse> dtos = posts.stream().map(p->new PostListShowResponse(p.getId(),p.getPostwriter().getUserId(),p.getTitle(),p.getContent(),p.getTimestamp().toString(),p.getPostTags()))
                 .collect(Collectors.toList());
         log.info("dto ={}", dtos);
         return new Result(dtos);
@@ -85,6 +101,8 @@ public class PostController {
         List<String> hashtag = new ArrayList<>();
         for(PostHashTag tag: postHashTags) hashtag.add(tag.getTag());
         response.setPosthashtag(hashtag);
+        List<Image> images = post.getImg();
+       if(!images.isEmpty()) response.setImage(images.get(0).getImgurl());
 
         return response;
     }

@@ -18,6 +18,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/libs-milestone'}
 }
 jar {
     enabled = false
@@ -36,8 +37,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'com.querydsl', name: 'querydsl-jpa', version: '4.3.1'
-  //  compile "com.mysema.querydsl:querydsl-jpa:3.6.3"
-   // compile "com.mysema.querydsl:querydsl-apt:3.6.3:jpa"
     annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: '4.3.1'
     implementation 'junit:junit:4.13.1'
     implementation 'org.projectlombok:lombok:1.18.18'
@@ -47,9 +46,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation('org.slf4j:jcl-over-slf4j')
     implementation('ch.qos.logback:logback-classic')
-//    testImplementation("org.junit.vintage:junit-vintage-engine") {
-//        exclude group: "org.hamcrest", module: "hamcrest-core"
-//    }
+    //aws s3 사용자 권한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 }
 

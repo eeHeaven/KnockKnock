@@ -13,7 +13,9 @@ public class PostSaveResponse {
     String title;
     String content;
     String postedTime;
+    String image;
     List<String> hashtag;
+    List<String> img;
 
 
     public PostSaveResponse(Long id, String writerId, String title, String content, LocalDateTime time) {
@@ -27,4 +29,5 @@ public class PostSaveResponse {
     public void setHashtag(List<String> hashtag) {
         this.hashtag = hashtag;
     }
+    public void setImage(List<String> img) {this.img = img;}
 }

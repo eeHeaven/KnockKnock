@@ -34,6 +34,9 @@ public class Post {
     @Column(name="post_timedate")
     private LocalDateTime timestamp;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Image> img = new ArrayList<>();
+
     //비즈니스 로직
     //1. 연관관계 관련 로직
     public void setPostWriter(Member member){

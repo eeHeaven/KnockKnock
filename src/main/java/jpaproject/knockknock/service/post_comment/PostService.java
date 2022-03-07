@@ -13,7 +13,9 @@ import jpaproject.knockknock.repository.post_comment.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,9 +28,10 @@ public class PostService {
     private final HashTagRepository hashTagRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
     @Transactional
-    public Post save(PostSaveRequest postSaveRequest) {
+    public Post save(PostSaveRequest postSaveRequest) throws IOException {
         // 1. Post 저장
         Post post = new Post();
         post.setTitle(postSaveRequest.getTitle());
@@ -62,7 +65,6 @@ public class PostService {
             realPostTag.hashTagSet(postHashTag);
             PostHashTag savedPostTag = hashTagRepository.save(realPostTag);
         }
-        
         return savedPost;
     }
 
