@@ -13,17 +13,18 @@ public class PostSaveResponse {
     String title;
     String content;
     String postedTime;
-    String image;
     List<String> hashtag;
     List<String> img;
+    String location;
 
 
-    public PostSaveResponse(Long id, String writerId, String title, String content, LocalDateTime time) {
+    public PostSaveResponse(Long id, String writerId, String title, String content, String time,String location) {
         this.writerId = writerId;
         this.id = id;
         this.title = title;
         this.content = content;
-        this.postedTime = time.toString();
+        this.postedTime = time;
+        this.location = location;
     }
 
     public void setHashtag(List<String> hashtag) {

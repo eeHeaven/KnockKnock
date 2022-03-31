@@ -45,9 +45,9 @@ public class PostController {
     public PostSaveResponse savePost(@RequestPart("request") @Valid PostWriteRequest request , @RequestPart(required = false) MultipartFile image,
                                      @PathVariable("userId") String writerId) throws IOException {
 
-       PostSaveRequest postSaveRequest = new PostSaveRequest(request.getTitle(),request.getContent(),writerId,request.getHashtag());
+       PostSaveRequest postSaveRequest = new PostSaveRequest(request.getTitle(),request.getContent(),writerId,request.getHashtag(),request.getLat(),request.getLon(),request.getLocation());
        Post post = postService.save(postSaveRequest);
-        PostSaveResponse response = new PostSaveResponse(post.getId(),post.getPostwriter().getUserId(),post.getTitle(),post.getContent(),post.getTimestamp());
+        PostSaveResponse response = new PostSaveResponse(post.getId(),post.getPostwriter().getUserId(),post.getTitle(),post.getContent(),post.getTimestamp(),post.getLocation());
         String[] hashtag = postSaveRequest.getHashTags().split(" ");
         List<String> hashtags = new ArrayList<>();
         for(String tag: hashtag)hashtags.add(tag);
@@ -63,7 +63,6 @@ public class PostController {
        log.info("게시글 작성하기 실행");
        return response;
     }
-
     //로그인 한 계정으로 자신이 작성한 게시글 리스트 조회하기
     @GetMapping("api/post/viewlist/{userId}")
     public Result viewPostofWriter(@PathVariable("userId")String writerId){
@@ -83,6 +82,15 @@ public class PostController {
         return new Result(dtos);
     }
 
+    //위치기반 1km 이내 게시글 리스트 조회하기
+    @GetMapping("api/post/view/{latitude}/{longitude}")
+    public Result viewPostListbyLocation(@PathVariable("latitude")Double latitude, @PathVariable("longitude")Double longitude){
+        List<Post> posts = postService.getPostsbyLocation(latitude, longitude);
+        List<PostListShowResponse> dtos = posts.stream().map(p->new PostListShowResponse(p.getId(),p.getPostwriter().getUserId(),p.getTitle(),p.getContent(),p.getTimestamp(),p.getPostTags()))
+                .collect(Collectors.toList());
+        return new Result(dtos);
+    }
+
     //게시글 하나 detail 정보 조회
     @GetMapping("api/post/view/{postId}")
     public PostViewResponse viewEachPost(@PathVariable("postId")Long id){
@@ -92,7 +100,9 @@ public class PostController {
                 post.getPostwriter().getUserId(),
                 post.getTitle(),
                 post.getContent(),
-                post.getTimestamp());
+                post.getTimestamp(),
+                post.getLocation()
+        );
         List<Comment> comments = post.getPostcomments();
         List<PostHashTag> postHashTags = post.getPostTags();
         List<CommentDto> commentDtoList = comments.stream().map(c->new CommentDto(c.getId(),c.getCommentwriter().getNickName(),c.getCommentwriter().getUserId(),c.getTimestamp(),c.getContent()))

@@ -33,13 +33,8 @@ public class PostService {
     @Transactional
     public Post save(PostSaveRequest postSaveRequest) throws IOException {
         // 1. Post 저장
-        Post post = new Post();
-        post.setTitle(postSaveRequest.getTitle());
-        post.setContent(postSaveRequest.getContent());
-        post.setTimestamp(LocalDateTime.now());
-
         Member writer = memberRepository.findByUserId(postSaveRequest.getWriterId());
-        post.setPostWriter(writer);
+        Post post = new Post(writer, postSaveRequest.getTitle(),postSaveRequest.getContent(),postSaveRequest.getLat(),postSaveRequest.getLon(),postSaveRequest.getLocation());
        Post savedPost =  postRepository.save(post);
 
         // 2. post에 추가한 posthashTag들 가져오기
@@ -98,6 +93,8 @@ public class PostService {
 
     public Post getPostById(Long id){return postRepository.findOneById(id);}
 
-
-
+    //위치기반 근처 게시글 목록 가져오기
+    public List<Post> getPostsbyLocation(double latitude, double longitude) {
+        return postRepository.findByLocation(latitude,longitude);
+    }
 }

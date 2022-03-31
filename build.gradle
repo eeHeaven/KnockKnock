@@ -48,7 +48,8 @@ dependencies {
     implementation('ch.qos.logback:logback-classic')
     //aws s3 사용자 권한 설정
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+    //websocket (채팅 구현)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 test {
