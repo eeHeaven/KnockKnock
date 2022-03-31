@@ -22,7 +22,7 @@ Git
 Spring Boot, Gradle(Build Tool), Spring Data JPA, QueryDSL, MariaDB(RDB), Spring Web Socket(STOMP), Java 8(Language), IntelliJ IDEA
 
 ## 🌳주요 기능 
-
+https://github.com/eeHeaven/KnockKnock_Android/blob/master/README.md#function
 
 
 
