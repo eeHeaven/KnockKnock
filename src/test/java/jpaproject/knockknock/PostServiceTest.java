@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,34 +51,25 @@ public class PostServiceTest {
     MemberRepository memberRepository;
 
     @Test
-    public void 게시글작성(){
+    public void 게시글작성()throws IndexOutOfBoundsException, IOException{
         //given
-        PostSaveRequest postSaveRequest = new PostSaveRequest();
-        postSaveRequest.setTitle("새 글입니다");
-        postSaveRequest.setContent("반가워요");
-
         Member writer = memberRepository.findByNickName("테스트멤버1");
-        postSaveRequest.setWriterId(writer.getUserId());
-        postSaveRequest.setHashTags("인사");
+        PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"#test",1.1F,1.1F,"이대도서관");
         //when
         Post savedPost =  postService.save(postSaveRequest);
         //then
-        Assertions.assertThat(writer.getPosts().size()).isEqualTo(3);
         Assertions.assertThat(savedPost.getPostwriter()).isEqualTo(writer);
     }
     @Test
-    public void 게시글삭제(){
+    public void 게시글삭제()throws IOException {
         //given
-        PostSaveRequest postSaveRequest = new PostSaveRequest();
-        postSaveRequest.setTitle("새 글입니다");
-        postSaveRequest.setContent("반가워요");
-        Member member = memberRepository.findByNickName("테스트멤버1");
-        postSaveRequest.setWriterId(member.getUserId());
+        Member writer = memberRepository.findByNickName("테스트멤버1");
+        PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"#test",1.1F,1.1F,"이대도서관");
         List<String> tags = new ArrayList<>();
 
         postSaveRequest.setHashTags("인사");
        Post savedPost =  postService.save(postSaveRequest);
-        CommentRequest commentRequest = new CommentRequest(member.getUserId(), savedPost.getId(), "this comment should be deleted");
+        CommentRequest commentRequest = new CommentRequest(writer.getUserId(), savedPost.getId(), "this comment should be deleted");
         Comment targetComment = commentService.save(commentRequest);
         //when
         postService.delete(savedPost.getId());

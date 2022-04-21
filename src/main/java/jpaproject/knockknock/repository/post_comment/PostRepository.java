@@ -2,13 +2,18 @@ package jpaproject.knockknock.repository.post_comment;
 
  import com.querydsl.core.support.FetchableQueryBase;
 import com.querydsl.core.support.QueryBase;
-import com.querydsl.jpa.impl.JPAQuery;
+ import com.querydsl.core.types.Expression;
+ import com.querydsl.core.types.dsl.Expressions;
+ import com.querydsl.core.types.dsl.MathExpressions;
+ import com.querydsl.core.types.dsl.NumberExpression;
+ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.post_comment.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+ import org.springframework.data.jpa.repository.Query;
+ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -18,7 +23,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepository {
+public class PostRepository{
 
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
@@ -57,7 +62,19 @@ public class PostRepository {
     }
 
 
-
-
-
+    //위치 기반으로 post 조회
+    public List<Post> findByLocation(double latitude, double longitude){
+        try{ List<Post> posts = queryFactory.selectFrom(post)
+                .where(MathExpressions.acos(MathExpressions.sin(MathExpressions.radians(Expressions.constant(latitude)))
+                        .multiply(MathExpressions.sin(MathExpressions.radians(post.latitude)))
+                        .add(MathExpressions.cos(MathExpressions.radians(Expressions.constant(latitude)))
+                                .multiply(MathExpressions.cos(MathExpressions.radians(post.latitude)))
+                                .multiply(MathExpressions.cos(MathExpressions.radians(Expressions.constant(longitude)).subtract(MathExpressions.radians(post.longitude)))))).multiply(6371).loe(1))
+                .orderBy(post.timestamp.desc())
+                .fetch();
+            return posts;
+        }catch (NoResultException nre){
+            return null;
+        }
+    }
 }

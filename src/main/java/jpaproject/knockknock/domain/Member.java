@@ -1,9 +1,8 @@
 package jpaproject.knockknock.domain;
 
-import jpaproject.knockknock.domain.message.MessageDialog;
+import jpaproject.knockknock.domain.message.UserChatRoom;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.Post;
-import jpaproject.knockknock.domain.report.Report;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name="member")
 @Getter
 @Setter
@@ -35,11 +32,12 @@ public class Member {
     private int reportCount;
 
     @OneToMany(mappedBy = "member")
-    private List<MessageDialog> messagesWithUser = new ArrayList<>();
+    private List<UserChatRoom> chatRooms = new ArrayList<>();
 
     @OneToMany(mappedBy="commentwriter")
     private List<Comment> membercomments = new ArrayList<Comment>();
 
+    protected Member(){}
     //생성 메서드
     public Member(String nickName, String userId, String userPassword){
         this.nickName = nickName;

@@ -46,13 +46,9 @@ public class CommentServiceTest {
 
     @Before
     public void 초기데이터설정(){
-        PostSaveRequest postSaveRequest = new PostSaveRequest();
-        postSaveRequest.setContent("테스트용 게시글");
-        postSaveRequest.setHashTags("테스트");
-        postSaveRequest.setTitle("테스트 중");
-
         Member member = new Member("테스트멤버1","testmember1","1234");
         memberService.signUp(member);
+        PostSaveRequest postSaveRequest = new PostSaveRequest("테스트초기데이터","안녕",member.getUserId(),"테스트초기",1.0F,1.0F,"이대도서관");
 
     }
     @Test

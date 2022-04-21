@@ -13,7 +13,9 @@ import jpaproject.knockknock.repository.post_comment.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,19 +26,16 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
+    private final HashTagService hashTagService;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
     @Transactional
-    public Post save(PostSaveRequest postSaveRequest) {
+    public Post save(PostSaveRequest postSaveRequest)throws IOException{
         // 1. Post 저장
-        Post post = new Post();
-        post.setTitle(postSaveRequest.getTitle());
-        post.setContent(postSaveRequest.getContent());
-        post.setTimestamp(LocalDateTime.now());
-
         Member writer = memberRepository.findByUserId(postSaveRequest.getWriterId());
-        post.setPostWriter(writer);
+        Post post = new Post(writer, postSaveRequest.getTitle(),postSaveRequest.getContent(),postSaveRequest.getLat(),postSaveRequest.getLon(),postSaveRequest.getLocation());
        Post savedPost =  postRepository.save(post);
 
         // 2. post에 추가한 posthashTag들 가져오기
@@ -49,7 +48,7 @@ public class PostService {
             if (hashTageach == null) {
                 HashTag newHashTag = new HashTag();
                 newHashTag.setTag(eachhashTag);
-                hashTageach = hashTagRepository.save(newHashTag);
+                hashTageach = hashTagService.save(newHashTag);
             }
             postHashTags[index++] = hashTageach;
         }
@@ -62,7 +61,6 @@ public class PostService {
             realPostTag.hashTagSet(postHashTag);
             PostHashTag savedPostTag = hashTagRepository.save(realPostTag);
         }
-        
         return savedPost;
     }
 
@@ -73,7 +71,7 @@ public class PostService {
         // 해당 post에 있는 posthashTag 삭제, 연결된 유일한 hashtag도 삭제
         List<PostHashTag> postHashTags = post.getPostTags();
         for(PostHashTag eachPostTag: postHashTags ){
-           if(eachPostTag.getHashtag().getPosthashtags().size()==1) hashTagRepository.removeHashTag(eachPostTag.getHashtag());
+           if(eachPostTag.getHashtag().getPosthashtags().size()==1) hashTagService.delete(eachPostTag.getHashtag());
             hashTagRepository.removePostHashTag(eachPostTag);
         }
         // 해당 post에 있는 comments 삭제
@@ -96,6 +94,8 @@ public class PostService {
 
     public Post getPostById(Long id){return postRepository.findOneById(id);}
 
-
-
+    //위치기반 근처 게시글 목록 가져오기
+    public List<Post> getPostsbyLocation(double latitude, double longitude) {
+        return postRepository.findByLocation(latitude,longitude);
+    }
 }

@@ -14,16 +14,24 @@ public class PostViewResponse {
     String title;
     String content;
     String postedTime;
+    String location;
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     List<CommentDto> commentlist;
     List<String> posthashtag;
+    String image;
 
-    public PostViewResponse(Long id, String writernickname,String writerId, String title, String content, LocalDateTime postedTime) {
+    public PostViewResponse(Long id, String writernickname,String writerId, String title, String content, String postedTime,String location) {
         this.id = id;
         this.writernickname = writernickname;
         this.writerId = writerId;
         this.title = title;
         this.content = content;
-        this.postedTime = postedTime.toString();
+        this.postedTime = postedTime;
+        this.location = location;
     }
 
     public void setCommentlist(List<CommentDto> commentlist) {

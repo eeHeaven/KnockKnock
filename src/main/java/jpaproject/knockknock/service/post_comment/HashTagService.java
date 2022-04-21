@@ -2,6 +2,7 @@ package jpaproject.knockknock.service.post_comment;
 
 import jpaproject.knockknock.domain.post_comment.HashTag;
 import jpaproject.knockknock.domain.post_comment.Post;
+import jpaproject.knockknock.elk.HashTagESService;
 import jpaproject.knockknock.repository.post_comment.HashTagRepository;
 import jpaproject.knockknock.repository.post_comment.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,18 @@ public class HashTagService {
 
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
+    private final HashTagESService hashTagESService;
 
     @Transactional
-    public Long save(HashTag hashTag){
+    public HashTag save(HashTag hashTag){
         hashTagRepository.save(hashTag);
-        return hashTag.getId();
+        hashTagESService.saveHashtag(hashTag);
+        return hashTag;
+    }
+    @Transactional
+    public void delete(HashTag hashTag){
+        hashTagRepository.removeHashTag(hashTag);
+        hashTagESService.deleteHashtag(hashTag);
     }
 
     public List<Post> PostListByTag(String hashtag){
