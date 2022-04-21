@@ -50,6 +50,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //websocket (채팅 구현)
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    //firebase
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+    //elasticsearch 관련 compile
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 }
 
 test {

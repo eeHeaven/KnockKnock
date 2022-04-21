@@ -15,7 +15,7 @@ public class PostSaveRequest {
     private Float lon;
     private String location;
 
-    public PostSaveRequest(){}
+    private PostSaveRequest(){}
 
     public PostSaveRequest(String title, String content, String writerId, String hashTags,Float lat,Float lon,String location) {
         this.title = title;

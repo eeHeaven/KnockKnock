@@ -26,12 +26,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
+    private final HashTagService hashTagService;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
 
     @Transactional
-    public Post save(PostSaveRequest postSaveRequest) throws IOException {
+    public Post save(PostSaveRequest postSaveRequest)throws IOException{
         // 1. Post 저장
         Member writer = memberRepository.findByUserId(postSaveRequest.getWriterId());
         Post post = new Post(writer, postSaveRequest.getTitle(),postSaveRequest.getContent(),postSaveRequest.getLat(),postSaveRequest.getLon(),postSaveRequest.getLocation());
@@ -47,7 +48,7 @@ public class PostService {
             if (hashTageach == null) {
                 HashTag newHashTag = new HashTag();
                 newHashTag.setTag(eachhashTag);
-                hashTageach = hashTagRepository.save(newHashTag);
+                hashTageach = hashTagService.save(newHashTag);
             }
             postHashTags[index++] = hashTageach;
         }
@@ -70,7 +71,7 @@ public class PostService {
         // 해당 post에 있는 posthashTag 삭제, 연결된 유일한 hashtag도 삭제
         List<PostHashTag> postHashTags = post.getPostTags();
         for(PostHashTag eachPostTag: postHashTags ){
-           if(eachPostTag.getHashtag().getPosthashtags().size()==1) hashTagRepository.removeHashTag(eachPostTag.getHashtag());
+           if(eachPostTag.getHashtag().getPosthashtags().size()==1) hashTagService.delete(eachPostTag.getHashtag());
             hashTagRepository.removePostHashTag(eachPostTag);
         }
         // 해당 post에 있는 comments 삭제
