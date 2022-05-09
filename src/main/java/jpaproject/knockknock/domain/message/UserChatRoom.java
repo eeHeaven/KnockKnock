@@ -32,6 +32,7 @@ public class UserChatRoom {
 
     public UserChatRoom(Member member, Member partner,ChatRoom chatRoom, boolean send) {
         this.member = member;
+        member.getChatRooms().add(this);
         this.chatRoom = chatRoom;
         chatRoom.userChatRooms.add(this);
         initUnreadcountBySending(send);
@@ -42,4 +43,5 @@ public class UserChatRoom {
         if(send) this.unreadcount = 0;
         else this.unreadcount = 1;
     }
+
 }

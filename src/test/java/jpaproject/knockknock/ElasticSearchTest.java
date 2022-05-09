@@ -54,7 +54,7 @@ public class ElasticSearchTest {
     public void 해시태그서비스저장(){
         //given
         HashTag hashTag = new HashTag();
-        hashTag.setTag("해시태그서비스2");
+        hashTag.setTag("안드로이드스튜디오");
         //when
         hashTagService.save(hashTag);
     }

@@ -35,7 +35,7 @@ public class Message {
         this.timestamp = s;
     }
 
-    public Message(String message, String senderId) {
+    public Message(String senderId, String message) {
         this.message = message;
         this.senderId = senderId;
     }
