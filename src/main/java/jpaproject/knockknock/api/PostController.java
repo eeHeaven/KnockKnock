@@ -128,10 +128,5 @@ public class PostController {
     }
 
 
-    @Data
-    @AllArgsConstructor
-    static class Result<T>{
-        private T data;
-    }
 
 }

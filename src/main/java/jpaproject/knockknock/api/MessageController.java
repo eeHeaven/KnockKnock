@@ -1,8 +1,8 @@
 package jpaproject.knockknock.api;
 
-import jpaproject.knockknock.api.request.FirstMessageRequest;
+import jpaproject.knockknock.api.request.MessageRequest;
 import jpaproject.knockknock.domain.Member;
-import jpaproject.knockknock.domain.message.DTO.MessageDTO;
+import jpaproject.knockknock.domain.message.DTO.MessageDto;
 import jpaproject.knockknock.domain.message.Message;
 import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.Message.MessageService;
@@ -20,13 +20,11 @@ public class MessageController {
     private final MessageService messageService;
     private final MemberService memberService;
 
-    @PostMapping("api/sendfirst")
-    public MessageDTO sendfirstMessage(@RequestBody @Valid FirstMessageRequest request){
-        // target Location 인근 receiver 찾기
+    @PostMapping("api/message/send")
+    public MessageDto sendMessage(@RequestBody @Valid MessageRequest request){
         Member sender = memberService.findByUserId(request.getSenderId());
-        //TODO: 인근 receiver 찾는 코드 구현되면 이 부분은 수정하기
-        Member receiver = memberService.findByUserId("receiver");
-        Message firstMessage = messageService.sendFirstMessage(sender,receiver, request.getMessage());
-        return new MessageDTO(firstMessage.getSenderId(), firstMessage.getMessage(), firstMessage.getTimestamp());
+        Member receiver = memberService.findByUserId(request.getReceiverId());
+        Message message = messageService.sendFirstMessage(request.getSenderId(),request.getReceiverId(), request.getMessage());
+        return new MessageDto(message.getSenderId(), message.getMessage(), message.getTimestamp());
     }
 }

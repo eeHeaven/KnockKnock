@@ -38,12 +38,15 @@ public class PostRepository{
 
     public List<Post> findByTag(String tag){
 
-        List<Post> posts = queryFactory.selectFrom(post).distinct()
+        try{List<Post> posts = queryFactory.selectFrom(post).distinct()
                 .innerJoin(postHashTag).on(post.id.eq(postHashTag.post.id))
                 .where(postHashTag.tag.contains(tag))
                 .orderBy(post.timestamp.desc())
                 .fetch();
-        return posts;
+        return posts;}
+        catch(NoResultException nre){
+            return null;
+        }
     }
 
     public List<Post> findByMember(String memberId){

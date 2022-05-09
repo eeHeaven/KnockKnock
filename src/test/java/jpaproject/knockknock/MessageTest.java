@@ -1,10 +1,7 @@
 package jpaproject.knockknock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jpaproject.knockknock.domain.Member;
-import jpaproject.knockknock.domain.message.Message;
 import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.Message.ChatRoomService;
 import jpaproject.knockknock.service.Message.MessageService;
@@ -12,19 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
@@ -33,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Rollback(true)
 @Slf4j
 @AutoConfigureMockMvc
-public class ChatRoomTest {
-
+public class MessageTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -56,34 +46,30 @@ public class ChatRoomTest {
     }
 
     @Test
-    public void 첫메세지전송시채팅방생성() {
+    public void 첫메세지전송() {
         //given
         Member sender = memberService.findByUserId("sender");
         Member receiver = memberService.findByUserId("receiver");
         //when
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"테스트입니다.");
+        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "테스트입니다.");
         //then
-        Assertions.assertThat(chatRoomService.findAllChatRooms().size()).isEqualTo(1);
-        Assertions.assertThat(chatRoomService.findAllUserChatRooms().size()).isEqualTo(2);
-        Assertions.assertThat(sender.getChatRooms().size()).isEqualTo(1);
-        Assertions.assertThat(receiver.getChatRooms().size()).isEqualTo(1);
-        Assertions.assertThat(sender.getChatRooms().get(0).getPartenerNickname()).isEqualTo("받는이");
-        Assertions.assertThat(receiver.getChatRooms().get(0).getPartenerNickname()).isEqualTo("보낸이");
+        Assertions.assertThat(sender.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("테스트입니다.");
+        Assertions.assertThat(receiver.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("테스트입니다.");
     }
 
     @Test
-    public void 두번째메세지이후부터채팅방생성안됨(){
+    public void 두번째이후메세지전송(){
         //given
         Member sender = memberService.findByUserId("sender");
         Member receiver = memberService.findByUserId("receiver");
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"첫번째 메세지입니다.");
+        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "첫번째 메세지입니다.");
         //when
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"두번째 메세지입니다.");
+        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "두번째 메세지입니다.");
         //then
-        Assertions.assertThat(chatRoomService.findAllChatRooms().size()).isEqualTo(1);
-        Assertions.assertThat(chatRoomService.findAllUserChatRooms().size()).isEqualTo(2);
-        Assertions.assertThat(sender.getChatRooms().size()).isEqualTo(1);
-        Assertions.assertThat(receiver.getChatRooms().size()).isEqualTo(1);
+        Assertions.assertThat(sender.getChatRooms().get(0).getChatRoom().getMessages().get(1).getMessage()).isEqualTo("첫번째 메세지입니다.");
+        Assertions.assertThat(receiver.getChatRooms().get(0).getChatRoom().getMessages().get(1).getMessage()).isEqualTo("첫번째 메세지입니다.");
+        Assertions.assertThat(sender.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("두번째 메세지입니다.");
+        Assertions.assertThat(receiver.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("두번째 메세지입니다.");
     }
 
 

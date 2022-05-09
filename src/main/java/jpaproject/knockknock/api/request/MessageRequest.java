@@ -5,9 +5,9 @@ import lombok.Data;
 
 
 @Data
-public class FirstMessageRequest {
+public class MessageRequest {
     String senderId;
+    String receiverId;
     String message;
-    Location targetLocation;
 
 }

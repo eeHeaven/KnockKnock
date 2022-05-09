@@ -43,4 +43,12 @@ public class ChatRoomService {
     public List<UserChatRoom> findAllUserChatRooms(){
         return userChatRoomRepository.findAll();
     }
+
+    public ChatRoom chatRoomExistBetween2Members(Member sender, String receiverid){
+        List<UserChatRoom> chatRooms = sender.getChatRooms();
+        for(UserChatRoom chatRoom : chatRooms){
+            if(chatRoom.getPartenerId().equals(receiverid)) return chatRoom.getChatRoom();
+        }
+        return null;
+    }
 }

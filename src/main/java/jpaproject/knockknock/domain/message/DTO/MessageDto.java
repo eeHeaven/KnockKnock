@@ -7,11 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MessageDTO {
+public class MessageDto {
 
     private String senderId;
     private String message;
     private String timestamp;
-
 
 }
