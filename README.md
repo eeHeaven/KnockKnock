@@ -11,7 +11,7 @@ KnockKnock(똑똑) 서비스는 우리 동네 카페 잔여석, 동네 포장마
 활발한 정보 공유를 위해 공유 포인트를 적립하는 방식으로 운영되며 추후에 포인트 결제 시스템까지 도입하고자 합니다.
 
 ## 🌳시스템 구성도 
-![image](https://user-images.githubusercontent.com/84822464/160988781-911321a4-01bb-40d2-94f2-ebfb2e388815.png)
+![image](https://user-images.githubusercontent.com/84822464/167330652-18afc411-673c-430e-9aae-57e82d5dbf1b.png)
 ### 테이블 구조 
 ![image](https://user-images.githubusercontent.com/84822464/161010206-f29ebdc5-9568-4d9b-b454-d9acf8cb0eec.png)
 ## 🌳환경
