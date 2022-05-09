@@ -13,7 +13,7 @@ KnockKnock(똑똑) 서비스는 우리 동네 카페 잔여석, 동네 포장마
 ## 🌳시스템 구성도 
 ![image](https://user-images.githubusercontent.com/84822464/167330652-18afc411-673c-430e-9aae-57e82d5dbf1b.png)
 ### 테이블 구조 
-![image](https://user-images.githubusercontent.com/84822464/161010206-f29ebdc5-9568-4d9b-b454-d9acf8cb0eec.png)
+![knockknockerd](https://user-images.githubusercontent.com/84822464/167331157-6274bcfc-7f37-474e-8420-404cc4cd9f62.png)
 ## 🌳환경
 ### 🌷 개발환경
 AWS RDS for MariaDB(RDB), Spring Boot(API Server), Android(Front), Firebase(Real Time DB- 실시간 유저 위치 업데이트), Google Map API, Amazon S3(이미지 조회, 저장)
