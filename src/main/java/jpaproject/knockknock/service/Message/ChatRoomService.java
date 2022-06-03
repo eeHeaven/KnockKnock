@@ -54,11 +54,10 @@ public class ChatRoomService {
         return userChatRoomRepository.findAll();
     }
 
-    public ChatRoom chatRoomBetween2Members(String senderId, String receiverid){
-        Member sender = memberRepository.findByUserId(senderId).orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
+    public ChatRoom chatRoomBetween2Members(Member sender, Member receiver){
         List<UserChatRoom> chatRooms = sender.getChatRooms();
         for(UserChatRoom chatRoom : chatRooms){
-            if(chatRoom.getPartenerId().equals(receiverid)) return chatRoom.getChatRoom();
+            if(chatRoom.getPartenerId().equals(receiver.getUserId())) return chatRoom.getChatRoom();
         }
         return null;
     }

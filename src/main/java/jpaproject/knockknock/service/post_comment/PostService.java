@@ -10,6 +10,8 @@ import jpaproject.knockknock.repository.post_comment.*;
 import jpaproject.knockknock.api.request.PostSaveRequest;
 import jpaproject.knockknock.domain.post_comment.HashTag;
 import jpaproject.knockknock.domain.post_comment.Post;
+import jpaproject.knockknock.strategy.factory.PointModifyFactory;
+import jpaproject.knockknock.strategy.pointmodify.PointModify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class PostService {
 
+    private final PointModifyFactory pointModifyFactory;
     private final PostRepository postRepository;
     private final PostRepositorySupport postRepositorySupport;
     private final HashTagRepository hashTagRepository;
@@ -45,6 +48,10 @@ public class PostService {
         String hashTag = postSaveRequest.getHashTags();
         String[] postHashTags = hashTag.split(" ");
         setPostHashTagToPost(postHashTags,post);
+
+        //3. 포인트 변화
+        PointModify pointModify = pointModifyFactory.findPointModify(PointModify.Situation.writePost);
+        pointModify.modifyPointof(writer);
 
         Post savedPost = postRepository.save(post);
         return savedPost;
@@ -84,6 +91,9 @@ public class PostService {
         for(Comment eachComment : comments) commentRepository.delete(eachComment);
         // 포스트 삭제
         postRepository.delete(post);
+        //포인트 변화
+        PointModify pointModify = pointModifyFactory.findPointModify(PointModify.Situation.deletePost);
+        pointModify.modifyPointof(post.getPostwriter());
     }
 
     //회원의 포스트 목록 가져오기
