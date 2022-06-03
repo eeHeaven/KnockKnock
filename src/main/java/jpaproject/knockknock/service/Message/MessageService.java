@@ -11,6 +11,8 @@ import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.message.ChatRoomRepository;
 import jpaproject.knockknock.repository.message.MessageRepository;
 import jpaproject.knockknock.repository.message.UserChatRoomRepository;
+import jpaproject.knockknock.strategy.factory.PointModifyFactory;
+import jpaproject.knockknock.strategy.pointmodify.PointModify;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
+    private final PointModifyFactory pointModifyFactory;
 
     @Transactional
     public Message save(MessageRequest request){
@@ -35,17 +38,25 @@ public class MessageService {
     @Transactional
     public Message sendMessage(MessageRequest request){
         Message messageToSend = save(request);
-        ChatRoom chatRoom = chatRoomService.chatRoomBetween2Members(request.getSenderId(), request.getReceiverId());
+        Member receiver = memberRepository.findByUserId(request.getReceiverId())
+                .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
+        Member sender = memberRepository.findByUserId(request.getSenderId())
+                .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
+
+        //chatroom이 없다면 생성, 있다면 가져온 후 메세지 추가
+        ChatRoom chatRoom = chatRoomService.chatRoomBetween2Members(sender, receiver);
         if(chatRoom==null){
-            Member receiver = memberRepository.findByUserId(request.getReceiverId())
-                    .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
-            Member sender = memberRepository.findByUserId(request.getSenderId())
-                    .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
             chatRoomService.makeChatRoom(sender,receiver,messageToSend);
         }
         else {
             chatRoom.addMessage(messageToSend);
         }
+        //포인트변화
+        PointModify sendpointModify = pointModifyFactory.findPointModify(PointModify.Situation.sendMessage);
+        sendpointModify.modifyPointof(sender);
+        PointModify receivepointModify = pointModifyFactory.findPointModify(PointModify.Situation.receiveMessage);
+        receivepointModify.modifyPointof(receiver);
+
         return messageToSend;
     }
 }
