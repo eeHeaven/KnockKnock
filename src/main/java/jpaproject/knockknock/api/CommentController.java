@@ -1,11 +1,9 @@
 package jpaproject.knockknock.api;
 
-import jpaproject.knockknock.api.request.CommentWriteRequest;
-import jpaproject.knockknock.api.response.CommentDto;
+import jpaproject.knockknock.api.response.CommentResponse;
 import jpaproject.knockknock.domain.post_comment.Comment;
-import jpaproject.knockknock.requestForm.CommentRequest;
+import jpaproject.knockknock.api.request.CommentRequest;
 import jpaproject.knockknock.service.post_comment.CommentService;
-import jpaproject.knockknock.service.post_comment.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostService postService;
 
-    @PostMapping("api/{userId}/post/view/{postid}/comment")
-    public CommentDto saveComment(@PathVariable("userId")String userid, @PathVariable("postid")Long postid, @RequestBody CommentWriteRequest request){
-        CommentRequest commentRequest = new CommentRequest(userid,postid, request.getContent());
-        Comment savedcomment = commentService.save(commentRequest);
-        CommentDto response = new CommentDto(savedcomment.getId(), savedcomment.getCommentwriter().getNickName(),savedcomment.getCommentwriter().getUserId(),savedcomment.getTimestamp(),savedcomment.getContent());
+    @PostMapping("api/post/view/comment")
+    public CommentResponse saveComment(@RequestBody CommentRequest request){
+        Comment savedcomment = commentService.save(request);
+        CommentResponse response = CommentResponse.entityToDto(savedcomment);
         return response;
     }
 

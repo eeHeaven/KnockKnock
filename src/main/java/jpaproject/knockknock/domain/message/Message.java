@@ -1,7 +1,7 @@
 package jpaproject.knockknock.domain.message;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jpaproject.knockknock.api.request.MessageRequest;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +10,9 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Table(name="message")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Message {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,21 +29,20 @@ public class Message {
     @Column(name="message_timedate")
     private String timestamp;
 
-    protected Message() {
-    }
-
     @PrePersist
     public void onPrePersist(){
         String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
         this.timestamp = s;
     }
 
-    public Message(String senderId, String message) {
-        this.message = message;
-        this.senderId = senderId;
+    public static Message dtoToEntity(MessageRequest request){
+        return builder()
+                .message(request.getMessage())
+                .senderId(request.getSenderId())
+                .build();
     }
 
-    public void setChatRoom(ChatRoom chatRoom) {
+     void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
 }

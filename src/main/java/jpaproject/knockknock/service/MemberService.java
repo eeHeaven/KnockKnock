@@ -1,11 +1,12 @@
 package jpaproject.knockknock.service;
 
+import jpaproject.knockknock.api.request.SignUpRequest;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.exception.ExceptionEnum;
-import jpaproject.knockknock.exception.LoginUnableException;
+import jpaproject.knockknock.exception.CustomException;
 import jpaproject.knockknock.repository.MemberRepository;
-import jpaproject.knockknock.requestForm.LoginInfo;
-import jpaproject.knockknock.requestForm.SignInRequest;
+import jpaproject.knockknock.api.request.LoginRequest;
+import jpaproject.knockknock.strategy.pointmodify.PointModify;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,10 @@ public class MemberService {
 
     //회원가입
     @Transactional(readOnly = false)
-    public Member signUp(Member member){
-        String userId = member.getUserId();
-        validateSameIdExsist(userId);
-        String userPassword = member.getUserPassword();
-        String nickname = member.getNickName();
-        validateSameNickNameExsist(nickname);
+    public Member signUp(SignUpRequest request){
+        Member member = Member.dtoToEntity(request);
+        validateSameIdExsist(request.getMemberId());
+        validateSameNickNameExsist(request.getNickname());
 
         memberRepository.save(member);
         return member;
@@ -34,40 +33,40 @@ public class MemberService {
 
     //회원가입시 동일한 id의 회원이 있는지 검증
     private void validateSameIdExsist(String id){
-        if(memberRepository.findByUserId(id)!= null){
-            log.info("이미 존재하는 id입니다. 회원가입 요청 id={}", id);
-            throw new IllegalStateException("이미 존재하는 id입니다ㅠㅠ 다른 id를 사용하세요.");
+        if(memberRepository.findByUserId(id).isPresent()){
+            throw new CustomException(ExceptionEnum.ID_ALREADY_EXIST);
         } else {
             log.info("기존에 없는 아이디입니다. 회원가입 요청 id={}", id);
         }
     }
     private void validateSameNickNameExsist(String nickname){
-        if(memberRepository.findByNickName(nickname) != null){
-            throw new IllegalStateException("이미 존재하는 닉네임입니다ㅠㅠ 다른 닉네임을 사용하세요.");
+        if(memberRepository.findByNickName(nickname).isPresent()){
+            throw new CustomException(ExceptionEnum.NICKNAME_ALREADY_EXIST);
+        }
+        else{
+            log.info("기존에 없는 닉네임입니다. 회원가입 요청 nickname ={}",nickname);
         }
     }
 
-    public Member login(LoginInfo loginInfo){
-        String userId = loginInfo.getId();
-        String userPassword = loginInfo.getPassword();
-        Member loginMember = memberRepository.LoginMemberReturn(userId,userPassword);
-        if(loginMember == null){
-            throw new LoginUnableException(ExceptionEnum.LOGIN_UNABLE);
-        }
+    public Member login(LoginRequest loginRequest){
+        String userId = loginRequest.getId();
+        String userPassword = loginRequest.getPassword();
+        Member loginMember = memberRepository.findByUserIdAndUserPassword(userId,userPassword)
+                .orElseThrow(()->new CustomException(ExceptionEnum.LOGIN_FAIL));
         return loginMember;
     }
 
     public Member findByUserId(String id){
-        return memberRepository.findByUserId(id);
+        return memberRepository.findByUserId(id)
+                .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
     }
 
-    // 포인트 변화
+    // 멤버의 포인트 변화
     @Transactional
-    public Member changeSharePoint(String id, int point){
-        Member member = memberRepository.findByUserId(id);
-        int memberpoint = member.getSharePoint();
-        member.setSharePoint(memberpoint+point);
-        return member;
+    public Member modifyPoint(String id, PointModify pointModify){
+        Member member = memberRepository.findByUserId(id)
+                .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
+        return pointModify.modifyPointof(member);
     }
 
 

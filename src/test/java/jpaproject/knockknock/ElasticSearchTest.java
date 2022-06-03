@@ -7,7 +7,7 @@ import jpaproject.knockknock.elk.HashTagESRepository;
 import jpaproject.knockknock.elk.HashTagESService;
 import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.HashTagRepository;
-import jpaproject.knockknock.requestForm.PostSaveRequest;
+import jpaproject.knockknock.api.request.PostSaveRequest;
 import jpaproject.knockknock.service.post_comment.HashTagService;
 import jpaproject.knockknock.service.post_comment.PostService;
 import org.assertj.core.api.Assertions;
@@ -44,8 +44,7 @@ public class ElasticSearchTest {
     @Test
     public void 해시태그저장(){
         //given
-        HashTag hashTag = new HashTag();
-        hashTag.setTag("엘라스틱서치");
+        HashTag hashTag = new HashTag("엘라스틱서치");
         //when
         hashTagESService.saveHashtag(hashTag);
     }
@@ -53,15 +52,15 @@ public class ElasticSearchTest {
     @Test
     public void 해시태그서비스저장(){
         //given
-        HashTag hashTag = new HashTag();
-        hashTag.setTag("안드로이드스튜디오");
+        HashTag hashTag = new HashTag("안드로이드스튜디오");
         //when
         hashTagService.save(hashTag);
     }
     @Test
     public void 기존기능해시태그저장()throws IndexOutOfBoundsException, IOException {
         //given
-        Member writer = memberRepository.findByNickName("테스트멤버1");
+        Member writer = memberRepository.findByNickName("테스트멤버1")
+                .orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
         PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"포스트테스트",1.1F,1.1F,"이대도서관");
         //when
         Post savedPost =  postService.save(postSaveRequest);
@@ -70,17 +69,18 @@ public class ElasticSearchTest {
     @Test
     @Rollback(false)
     public void 해시태그삭제() throws IOException {
-        Member writer = memberRepository.findByNickName("테스트멤버1");
+        Member writer = memberRepository.findByNickName("테스트멤버1").orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
         PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"삭제테스트",1.1F,1.1F,"이대도서관");
         Post savedPost = postService.save(postSaveRequest);
-        HashTag hashTag = hashTagRepository.findByTag("삭제테스트");
+        HashTag hashTag = hashTagRepository.findByTag("삭제테스트").orElseThrow(
+                ()-> new IllegalArgumentException("해당 해시태그 없음"));
         hashTagESService.deleteHashtag(hashTag);
     }
     @Test
     @Rollback(false)
     public void 해시태그가사라질때elasticsearch에서도삭제() throws IOException {
         //given
-        Member writer = memberRepository.findByNickName("테스트멤버1");
+        Member writer = memberRepository.findByNickName("테스트멤버1").orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
         PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"삭제테스트",1.1F,1.1F,"이대도서관");
         Post savedPost = postService.save(postSaveRequest);
         //when
@@ -91,7 +91,7 @@ public class ElasticSearchTest {
     @Test
     public void 해시태그조회() throws IOException {
         //given
-        Member writer = memberRepository.findByNickName("테스트멤버1");
+        Member writer = memberRepository.findByNickName("테스트멤버1").orElseThrow(()-> new IllegalArgumentException("해당 멤버 없음"));
         PostSaveRequest postSaveRequest = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"검색테스트",1.1F,1.1F,"이대도서관");
         Post savedPost = postService.save(postSaveRequest);
         PostSaveRequest postSaveRequest2 = new PostSaveRequest("테스트","테스트용글입니다.",writer.getUserId(),"가나다라사마바",1.1F,1.1F,"이대도서관");

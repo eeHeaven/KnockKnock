@@ -1,15 +1,16 @@
 package jpaproject.knockknock.domain.post_comment;
 
 import jpaproject.knockknock.domain.Member;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
-@Setter
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Comment {
 
     @Id
@@ -28,27 +29,31 @@ public class Comment {
     private String content;
 
     @Column(name="comment_timedate")
-    private LocalDateTime timestamp;
+    private String timestamp;
 
-    // 비즈니스 로직설계
+    @PrePersist
+    public void onPrePersist(){
+        String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+        this.timestamp = s;
+    }
+
     //1. 양방향 연관관계 관련 로직
-    public void setCommentwriter(Member member){
+    private void setCommentwriter(Member member){
         this.commentwriter = member;
         member.getMembercomments().add(this);
     }
 
-    public void addToPost(Post post){
+    private void addToPost(Post post){
         this.post = post;
         post.getPostcomments().add(this);
     }
 
     //생성메서드
-    public Comment CreateComment(Member writer, Post post,String content){
+    public static Comment create(Member writer, Post post,String content){
         Comment comment = new Comment();
-        comment.setTimestamp(LocalDateTime.now());
-        comment.setPost(post);
+        comment.addToPost(post);
         comment.setCommentwriter(writer);
-        comment.setContent(content);
+        comment.content = content;
         return comment;
     }
 

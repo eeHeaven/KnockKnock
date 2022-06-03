@@ -1,16 +1,14 @@
 package jpaproject.knockknock.domain.message;
 
 import jpaproject.knockknock.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="userchatroom")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChatRoom {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,18 +28,28 @@ public class UserChatRoom {
 
     private int unreadcount;
 
-    public UserChatRoom(Member member, Member partner,ChatRoom chatRoom, boolean send) {
-        this.member = member;
-        member.getChatRooms().add(this);
+    private void setChatRoom(ChatRoom chatRoom){
         this.chatRoom = chatRoom;
         chatRoom.userChatRooms.add(this);
-        initUnreadcountBySending(send);
-        this.partenerId = partner.getUserId();
-        this.partenerNickname = partner.getNickName();
     }
-    public void initUnreadcountBySending(boolean send){
+    private void setMember(Member member){
+        this.member = member;
+        member.getChatRooms().add(this);
+    }
+
+    public static UserChatRoom create(Member member, Member partner,ChatRoom chatRoom, boolean send) {
+        UserChatRoom userChatRoom = new UserChatRoom();
+        userChatRoom.setMember(member);
+        userChatRoom.setChatRoom(chatRoom);
+        userChatRoom.setUnreadcountBySending(send);
+        userChatRoom.partenerId = partner.getUserId();
+        userChatRoom.partenerNickname = partner.getNickName();
+        return userChatRoom;
+    }
+
+    private void setUnreadcountBySending(boolean send){
         if(send) this.unreadcount = 0;
-        else this.unreadcount = 1;
+        else this.unreadcount++;
     }
 
 }

@@ -1,22 +1,18 @@
 package jpaproject.knockknock;
 
+import jpaproject.knockknock.api.request.SignUpRequest;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.repository.MemberRepository;
-import jpaproject.knockknock.requestForm.LoginInfo;
-import jpaproject.knockknock.requestForm.SignInRequest;
+import jpaproject.knockknock.api.request.LoginRequest;
 import jpaproject.knockknock.service.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -35,31 +31,31 @@ public class MemberServiceTest {
 
     @Before
     public void 초기데이터설정(){
-        Member member = new Member("테스트5","testmember5","1234");
-        Member member2 = new Member("테스트6","testmember6","1234");
-        memberService.signUp(member);
-        memberService.signUp(member2);
+        Member member =Member.memberBuilder().userId("testmember5").nickName("테스트5").userPassword("1234").build();
+        Member member2 = Member.memberBuilder().userId("testmember6").nickName("테스트6").userPassword("1234").build();
+        memberRepository.save(member);
+        memberRepository.save(member2);
     }
 
     @Test
     public void 회원가입(){
         //given
-        Member newmember = new Member("테스트7","newmember7","1234");
+        SignUpRequest request = new SignUpRequest("테스트멤버7","testmember7","1234");
 
         //when
-        Member member = memberService.signUp(newmember);
+        Member member = memberService.signUp(request);
         //then
-        Member member1 = memberRepository.findByUserId("newmember7");
-        Member member2 = memberRepository.findOne(member.getId());
+        Member member1 = memberRepository.findByUserId("newmember7").orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
+        Member member2 = memberRepository.findById(member.getId()).orElseThrow(()-> new IllegalArgumentException("해당 멤버 없음"));
         Assertions.assertThat(member1).isEqualTo(member2);
     }
 
     @Test(expected = IllegalStateException.class)
     public void 중복회원가입안됨(){
         //given
-        Member newmember = new Member("테스트","testmember1","1234");
+        SignUpRequest request = new SignUpRequest("테스트","testmember1","1234");
         //when
-        Member member = memberService.signUp(newmember);
+        Member member = memberService.signUp(request);
         //then
         Assertions.fail("예외 발생 안됨");
     }
@@ -67,9 +63,9 @@ public class MemberServiceTest {
     @Test
     public void 로그인(){
         //given
-        LoginInfo loginInfo = new LoginInfo("testmember1","1234");
+        LoginRequest loginRequest = new LoginRequest("testmember1","1234");
         //when
-        Member member = memberService.login(loginInfo);
+        Member member = memberService.login(loginRequest);
         //then
         Assertions.assertThat(member).isNotNull();
         Assertions.assertThat(member.getUserId()).isEqualTo("testmember1");
@@ -78,9 +74,9 @@ public class MemberServiceTest {
     @Test(expected = IllegalStateException.class)
     public void 로그인실패(){
         //given
-        LoginInfo loginInfo = new LoginInfo("testmember1","5678");
+        LoginRequest loginRequest = new LoginRequest("testmember1","5678");
         //when
-        Member member = memberService.login(loginInfo);
+        Member member = memberService.login(loginRequest);
         //then
         Assertions.fail("예외 발생 안됨");
     }
