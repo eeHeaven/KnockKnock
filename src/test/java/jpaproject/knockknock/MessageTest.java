@@ -1,7 +1,9 @@
 package jpaproject.knockknock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jpaproject.knockknock.api.request.MessageRequest;
 import jpaproject.knockknock.domain.Member;
+import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.Message.ChatRoomService;
 import jpaproject.knockknock.service.Message.MessageService;
@@ -36,13 +38,15 @@ public class MessageTest {
     MessageService messageService;
     @Autowired
     MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Before
     public void 초기데이터설정() {
-        Member sender = new Member("보낸이", "sender", "1234");
-        memberService.signUp(sender);
-        Member receiver = new Member("받는이", "receiver", "1234");
-        memberService.signUp(receiver);
+        Member sender = Member.memberBuilder().userId("sender").nickName("보낸이").userPassword("1234").build();
+        memberRepository.save(sender);
+        Member receiver = Member.memberBuilder().userId("receiver").nickName("받는이").userPassword("1234").build();
+        memberRepository.save(receiver);
     }
 
     @Test
@@ -50,8 +54,11 @@ public class MessageTest {
         //given
         Member sender = memberService.findByUserId("sender");
         Member receiver = memberService.findByUserId("receiver");
+        MessageRequest messageRequest = MessageRequest.builder().message("테스트입니다.")
+                .senderId(sender.getUserId()).receiverId(receiver.getUserId())
+                .build();
         //when
-        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "테스트입니다.");
+        messageService.sendMessage(messageRequest);
         //then
         Assertions.assertThat(sender.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("테스트입니다.");
         Assertions.assertThat(receiver.getChatRooms().get(0).getChatRoom().getMessages().get(0).getMessage()).isEqualTo("테스트입니다.");
@@ -62,9 +69,15 @@ public class MessageTest {
         //given
         Member sender = memberService.findByUserId("sender");
         Member receiver = memberService.findByUserId("receiver");
-        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "첫번째 메세지입니다.");
+        MessageRequest messageRequest = MessageRequest.builder().message("첫번째 메세지입니다.")
+                .senderId(sender.getUserId()).receiverId(receiver.getUserId())
+                .build();
+        messageService.sendMessage(messageRequest);
         //when
-        messageService.sendFirstMessage(sender.getUserId(), receiver.getUserId(), "두번째 메세지입니다.");
+        MessageRequest secondRequest = MessageRequest.builder().message("두번째 메세지입니다.")
+                .senderId(sender.getUserId()).receiverId(receiver.getUserId())
+                .build();
+        messageService.sendMessage(secondRequest);
         //then
         Assertions.assertThat(sender.getChatRooms().get(0).getChatRoom().getMessages().get(1).getMessage()).isEqualTo("첫번째 메세지입니다.");
         Assertions.assertThat(receiver.getChatRooms().get(0).getChatRoom().getMessages().get(1).getMessage()).isEqualTo("첫번째 메세지입니다.");

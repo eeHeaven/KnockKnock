@@ -1,8 +1,7 @@
 package jpaproject.knockknock.domain.post_comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
@@ -11,7 +10,9 @@ import java.util.List;
 
 @Entity
 @Document(indexName = "hashtag")
-@Getter @Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class HashTag {
 
     @Id @GeneratedValue
@@ -23,5 +24,9 @@ public class HashTag {
     @Transient
     @OneToMany(mappedBy = "hashtag")
     private List<PostHashTag> posthashtags = new ArrayList<>();
+
+    public HashTag(String tag){
+        this.tag = tag;
+    }
 
 }

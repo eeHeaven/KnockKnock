@@ -1,20 +1,16 @@
 package jpaproject.knockknock.api;
 
 
-import jpaproject.knockknock.api.response.HashTagDto;
-import jpaproject.knockknock.api.response.PostListShowResponse;
-import jpaproject.knockknock.api.response.PostSaveResponse;
+import jpaproject.knockknock.api.response.HashTagResponse;
+import jpaproject.knockknock.api.response.PostListResponse;
 import jpaproject.knockknock.domain.post_comment.HashTag;
 import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.elk.HashTagESService;
 import jpaproject.knockknock.service.post_comment.HashTagService;
 import jpaproject.knockknock.service.post_comment.PostService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,28 +30,28 @@ public class HashTagController {
     @GetMapping("api/post/view/hashtag")
     public Result viewPostByTag(@RequestParam(name = "hashtag")String hashtag){
         List<Post> posts = hashTagService.PostListByTag(hashtag);
-        log.info("posts = {}",posts);
-        log.info("searching for :{}",hashtag);
-        if(posts == null) return new Result(new ArrayList<>());
-        List<PostListShowResponse> dtos = posts.stream().map(p->new PostListShowResponse(p.getId(),p.getPostwriter().getUserId(),p.getTitle(),p.getContent(),p.getTimestamp().toString(),p.getPostTags()))
+        if(posts == null) {
+            log.info("해시태그 {}를 포함한 게시글 없음",hashtag);
+            return new Result(new ArrayList<>());
+        }
+
+        List<PostListResponse> dtos = posts.stream()
+                .map(p->PostListResponse.entityToDto(p))
                 .collect(Collectors.toList());
+        log.info("해시태그 {}를 포함한 게시글 {} 개 조회", hashtag, posts.size());
         return new Result(dtos);
     }
+
     @GetMapping("api/search/autocomplete")
     public Result viewHashTagAutoCompleteResult(@RequestParam(name = "input")String input){
         log.info("AutoCompleteApi start: input = "+input);
         List<HashTag> hashTags = hashTagESService.findHashTagbyinput(input);
         for(HashTag each: hashTags){
-            log.info(each.getTag());
+            log.info("조회된 검색어 자동완성 리스트 : " +each.getTag());
         }
-        List<HashTagDto> dtos = hashTags.stream().map(h->new HashTagDto(h.getTag()))
+        List<HashTagResponse> dtos = hashTags.stream().map(h->new HashTagResponse(h.getTag()))
                 .collect(Collectors.toList());
         return new Result(dtos);
     }
 
-    @Data
-    @AllArgsConstructor
-    static class Result<T>{
-        private T data;
-    }
 }

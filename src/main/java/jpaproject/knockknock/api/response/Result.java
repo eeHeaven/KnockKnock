@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class HashTagDto {
-    String tag;
+public class Result<T>{
+    private T data;
 }

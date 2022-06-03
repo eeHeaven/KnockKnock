@@ -2,9 +2,11 @@ package jpaproject.knockknock.service;
 
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.report.Report;
+import jpaproject.knockknock.exception.ExceptionEnum;
+import jpaproject.knockknock.exception.CustomException;
 import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.ReportRepository;
-import jpaproject.knockknock.requestForm.ReportForm;
+import jpaproject.knockknock.api.request.ReportRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,12 @@ public class ReportService {
 
     // 신고건 저장
     @Transactional
-    public Report save(ReportForm reportForm){
+    public Report save(ReportRequest reportRequest){
         Report report = new Report();
-        Member objectMember = memberRepository.findOne(reportForm.getObjectMemberId());
+        Member objectMember = memberRepository.findById(reportRequest.getObjectMemberId())
+                .orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
         report.setObjectMember(objectMember);
-        report.setReason(reportForm.getReason());
+        report.setReason(reportRequest.getReason());
         report.setDetailReason(report.getDetailReason());
         reportRepository.save(report);
         return report;

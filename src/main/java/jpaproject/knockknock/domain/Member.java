@@ -1,5 +1,6 @@
 package jpaproject.knockknock.domain;
 
+import jpaproject.knockknock.api.request.SignUpRequest;
 import jpaproject.knockknock.domain.message.UserChatRoom;
 import jpaproject.knockknock.domain.post_comment.Comment;
 import jpaproject.knockknock.domain.post_comment.Post;
@@ -12,7 +13,9 @@ import java.util.List;
 @Entity
 @Table(name="member")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(builderMethodName = "memberBuilder")
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,25 +40,19 @@ public class Member {
     @OneToMany(mappedBy="commentwriter")
     private List<Comment> membercomments = new ArrayList<Comment>();
 
-    protected Member(){}
-    //생성 메서드
-    public Member(String nickName, String userId, String userPassword){
-        this.nickName = nickName;
-        this.sharePoint = 100;
-        this.isBlocked = false;
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.reportCount = 0;
+    public static Member dtoToEntity(SignUpRequest request){
+        return memberBuilder()
+                .userId(request.getMemberId())
+                .userPassword(request.getMemberPassword())
+                .nickName(request.getNickname())
+                .build();
     }
 
-    // 비즈니스 로직 - 단순연산 데이터관리
-    public void sendMessage(){
-        this.sharePoint = this.getSharePoint() - 10;
+    public void setPoint(int point){this.sharePoint = point; }
+    public int reported(){ return ++this.reportCount;}
+
+
+    public void setBlocked(boolean blocked) {
+        this.isBlocked = blocked;
     }
-    public void viewPost(){
-        this.sharePoint = this.getSharePoint() - 5;
-    }
-
-
-
 }

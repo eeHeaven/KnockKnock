@@ -1,7 +1,6 @@
 package jpaproject.knockknock.domain.message;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name="chatroom")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +26,10 @@ public class ChatRoom {
     String lastMessage;
     String lastMessageTimeStamp;
 
-    public ChatRoom(Message message){
-        addMessage(message);
+    public static ChatRoom createWithFirstMessage(Message message){
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.addMessage(message);
+        return chatRoom;
     }
 
     public Message addMessage(Message message){
@@ -39,4 +40,5 @@ public class ChatRoom {
 
         return message;
     }
+
 }

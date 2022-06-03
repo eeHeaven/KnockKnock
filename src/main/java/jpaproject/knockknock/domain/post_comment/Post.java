@@ -1,8 +1,8 @@
 package jpaproject.knockknock.domain.post_comment;
 
+import jpaproject.knockknock.api.request.PostSaveRequest;
 import jpaproject.knockknock.domain.Member;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -13,8 +13,10 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Post {
 
     @Id @GeneratedValue
@@ -43,31 +45,36 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> img = new ArrayList<>();
 
-    //비즈니스 로직
-    //1. 연관관계 관련 로직
-    public void setPostWriter(Member member){
-        this.postwriter = member;
-        member.getPosts().add(this);
-    }
-
-    public void addPostHashTag(PostHashTag postHashTag){
-        postHashTag.setPost(this);
-        this.getPostTags().add(postHashTag);
-    }
-    public Post(){}
-    // 생성메서드
-    public Post(Member writer, String title, String content,double latitude,double longitude,String location){
-        this.setPostWriter(writer);
-        this.setTitle(title);
-        this.setContent(content);
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.location = location;
-    }
-
+    //생성 시간 timestamp 설정
     @PrePersist
     public void onPrePersist(){
         String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
         this.timestamp = s;
     }
+
+    //비즈니스 로직
+    //연관관계 관련 로직
+    public void setPostWriter(Member member){
+        this.postwriter = member;
+        member.getPosts().add(this);
+    }
+
+    public void setImg(Image img){
+        this.img.add(img);
+        img.setPost(this);
+    }
+
+    // 생성메서드
+    //작성자, 이미지, 해시태그 새로 만들어야 함
+    public static Post dtoToEntity(PostSaveRequest request){
+        return Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .latitude((double)request.getLat())
+                .longitude((double)request.getLon())
+                .location(request.getLocation())
+                .build();
+    }
+
+
 }

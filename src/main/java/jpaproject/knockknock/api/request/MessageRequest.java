@@ -1,13 +1,20 @@
 package jpaproject.knockknock.api.request;
 
-import jpaproject.knockknock.domain.Location;
-import lombok.Data;
+import lombok.*;
+
+import javax.validation.constraints.NotBlank;
 
 
-@Data
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MessageRequest {
-    String senderId;
-    String receiverId;
-    String message;
+    @NotBlank
+    private String senderId;
+    @NotBlank
+    private String receiverId;
+    @NotBlank
+    private String message;
 
 }

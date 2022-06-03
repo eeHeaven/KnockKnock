@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @ToString
-public class LoginExceptionEntity {
-
-    private String errorCode;
-    private String errorMessage;
+public class CustomExceptionEntity {
+    private final String errorCode;
+    private final String errorMessage;
 
     @Builder
-    public LoginExceptionEntity(HttpStatus status, String errorCode, String errorMessage){
+    public CustomExceptionEntity(HttpStatus status, String errorCode, String errorMessage){
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

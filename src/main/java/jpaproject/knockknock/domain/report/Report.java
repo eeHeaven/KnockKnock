@@ -27,7 +27,7 @@ public class Report {
     public void setObjectMember(Member member){
         this.objectMember = member;
        int count =  member.getReportCount();
-       member.setReportCount(++count);
+       member.reported();
        if(count >=5) member.setBlocked(true);
     }
     // 생성메서드

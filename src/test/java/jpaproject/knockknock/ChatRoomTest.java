@@ -3,8 +3,10 @@ package jpaproject.knockknock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jpaproject.knockknock.api.request.MessageRequest;
 import jpaproject.knockknock.domain.Member;
 import jpaproject.knockknock.domain.message.Message;
+import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.service.MemberService;
 import jpaproject.knockknock.service.Message.ChatRoomService;
 import jpaproject.knockknock.service.Message.MessageService;
@@ -46,25 +48,32 @@ public class ChatRoomTest {
     MessageService messageService;
     @Autowired
     MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Before
     public void 초기데이터설정() {
-        Member sender = new Member("보낸이", "sender", "1234");
-        memberService.signUp(sender);
-        Member receiver = new Member("받는이", "receiver", "1234");
-        memberService.signUp(receiver);
+        Member sender = Member.memberBuilder().userId("sender").userPassword("1234").nickName("보낸이").build();
+        memberRepository.save(sender);
+        Member receiver = Member.memberBuilder().userId("receiver").userPassword("5678").nickName("받는이").build();
+        memberRepository.save(receiver);
     }
 
     @Test
     public void 첫메세지전송시채팅방생성() {
         //given
-        Member sender = memberService.findByUserId("sender");
-        Member receiver = memberService.findByUserId("receiver");
+        MessageRequest messageRequest = MessageRequest.builder()
+                .senderId("sender")
+                .receiverId("receiver")
+                .message("테스트입니다")
+                .build();
         //when
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"테스트입니다.");
+        messageService.sendMessage(messageRequest);
         //then
         Assertions.assertThat(chatRoomService.findAllChatRooms().size()).isEqualTo(1);
         Assertions.assertThat(chatRoomService.findAllUserChatRooms().size()).isEqualTo(2);
+        Member sender = memberService.findByUserId("sender");
+        Member receiver = memberService.findByUserId("receiver");
         Assertions.assertThat(sender.getChatRooms().size()).isEqualTo(1);
         Assertions.assertThat(receiver.getChatRooms().size()).isEqualTo(1);
         Assertions.assertThat(sender.getChatRooms().get(0).getPartenerNickname()).isEqualTo("받는이");
@@ -74,12 +83,22 @@ public class ChatRoomTest {
     @Test
     public void 두번째메세지이후부터채팅방생성안됨(){
         //given
+        MessageRequest messageRequest = MessageRequest.builder()
+                .senderId("sender")
+                .receiverId("receiver")
+                .message("테스트입니다")
+                .build();
+        messageService.sendMessage(messageRequest);
+        //when
+        MessageRequest messageRequest2 = MessageRequest.builder()
+                .senderId("sender")
+                .receiverId("receiver")
+                .message("두번째 메세지입니다.")
+                .build();
+        messageService.sendMessage(messageRequest2);
+        //then
         Member sender = memberService.findByUserId("sender");
         Member receiver = memberService.findByUserId("receiver");
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"첫번째 메세지입니다.");
-        //when
-        messageService.sendFirstMessage(sender.getUserId(),receiver.getUserId(),"두번째 메세지입니다.");
-        //then
         Assertions.assertThat(chatRoomService.findAllChatRooms().size()).isEqualTo(1);
         Assertions.assertThat(chatRoomService.findAllUserChatRooms().size()).isEqualTo(2);
         Assertions.assertThat(sender.getChatRooms().size()).isEqualTo(1);
