@@ -15,31 +15,32 @@ import java.util.List;
 @Builder
 public class PostHashTag {
 
-    @Id @GeneratedValue
-    @Column(name="posttag_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "posttag_id")
     private Long id;
 
     private String tag;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name="tag_id")
+    @JoinColumn(name = "tag_id")
     private HashTag hashtag;
 
-    public void setHashtag(HashTag hashTag){
+    public void setHashtag(HashTag hashTag) {
         hashTag.getPosthashtags().add(this);
         this.hashtag = hashTag;
     }
 
-    public void setPost(Post post){
+    public void setPost(Post post) {
         this.post = post;
         post.getPostTags().add(this);
     }
 
-    public PostHashTag(String tag){
+    public PostHashTag(String tag) {
         this.tag = tag;
     }
 }

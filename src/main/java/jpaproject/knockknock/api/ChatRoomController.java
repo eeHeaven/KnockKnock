@@ -25,16 +25,16 @@ public class ChatRoomController {
     private final UserChatRoomRepository userChatRoomRepository;
 
     @GetMapping("api/userchatroom/list/{userId}")
-    public Result viewUserChatRoomList(@PathVariable("userId") String userId){
+    public Result<List<ChatRoomListResponse>> viewUserChatRoomList(@PathVariable("userId") String userId) {
         List<UserChatRoom> chatRooms = chatRoomService.viewChatRoom(userId);
         List<ChatRoomListResponse> dtos = chatRooms.stream()
-                .map(c-> ChatRoomListResponse.entityToDto(c))
+                .map(ChatRoomListResponse::entityToDto)
                 .collect(Collectors.toList());
-        return new Result(dtos);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
     @GetMapping("api/userchatroom/{chatroomid}")
-    public UserChatRoomResponse viewUserChatRoom(@PathVariable("chatroomid")Long id){
+    public UserChatRoomResponse viewUserChatRoom(@PathVariable("chatroomid") Long id) {
         UserChatRoom userChatRoom = userChatRoomRepository.getById(id);
         return UserChatRoomResponse.entityToDto(userChatRoom);
     }

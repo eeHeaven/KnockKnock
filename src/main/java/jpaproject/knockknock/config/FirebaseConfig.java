@@ -12,14 +12,14 @@ import java.io.FileInputStream;
 public class FirebaseConfig {
 
     @PostConstruct
-    public void init(){
-        try{
+    public void init() {
+        try {
             FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebaseAccessKey.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
             FirebaseApp.initializeApp(options);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -16,9 +16,8 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositorySupport {
+public class PostRepositoryImpl implements PostRepositoryCustom{
 
-    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     QPost post = QPost.post;
     QPostHashTag postHashTag = QPostHashTag.postHashTag;

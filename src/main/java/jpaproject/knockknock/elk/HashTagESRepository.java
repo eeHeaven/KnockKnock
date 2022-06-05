@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HashTagESRepository extends ElasticsearchRepository<HashTag,Long> {
+public interface HashTagESRepository extends ElasticsearchRepository<HashTag, Long> {
     @Query("{\"match\":{\"tag\":\"?0\"}}")
     List<HashTag> findByTag(String input);
 }

@@ -13,12 +13,15 @@ public class HashTagESService {
     @Autowired
     HashTagESRepository hashTagESRepository;
 
-    public void saveHashtag(HashTag hashTag){
+    public void saveHashtag(HashTag hashTag) {
         hashTagESRepository.save(hashTag);
     }
-    public void deleteHashtag(HashTag hashTag){ hashTagESRepository.delete(hashTag);}
 
-    public List<HashTag> findHashTagbyinput(String input){
+    public void deleteHashtag(HashTag hashTag) {
+        hashTagESRepository.delete(hashTag);
+    }
+
+    public List<HashTag> findHashTagbyinput(String input) {
         return hashTagESRepository.findByTag(input);
     }
 }

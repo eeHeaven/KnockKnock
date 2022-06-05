@@ -18,7 +18,7 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping("api/message/send")
-    public MessageResponse sendMessage(@RequestBody @Valid MessageRequest request){
+    public MessageResponse sendMessage(@RequestBody @Valid MessageRequest request) {
         Message message = messageService.sendMessage(request);
         return MessageResponse.entityToDto(message);
     }

@@ -6,7 +6,6 @@ import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.repository.MemberRepository;
 import jpaproject.knockknock.repository.post_comment.CommentRepository;
 import jpaproject.knockknock.repository.post_comment.PostRepository;
-import jpaproject.knockknock.repository.post_comment.PostRepositorySupport;
 import jpaproject.knockknock.api.request.CommentRequest;
 import jpaproject.knockknock.api.request.PostSaveRequest;
 import jpaproject.knockknock.service.MemberService;
@@ -43,8 +42,6 @@ public class CommentServiceTest {
     CommentRepository commentRepository;
     @Autowired
     MemberService memberService;
-    @Autowired
-    PostRepositorySupport postRepositorySupport;
 
     @Before
     public void 초기데이터설정(){
@@ -56,7 +53,7 @@ public class CommentServiceTest {
     @Test
     public void 댓글달기(){
         //given
-        List<Post> posts = postRepositorySupport.findByTag("테스트");
+        List<Post> posts = postRepository.findByTag("테스트");
         Post post = posts.get(0);
         Member member = memberRepository.findByNickName("테스트멤버1").orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
         CommentRequest commentRequest = new CommentRequest(member.getUserId(),post.getId(),"nice to meet you");
@@ -75,7 +72,7 @@ public class CommentServiceTest {
     @Test
     public void 댓글삭제(){
         //given
-        List<Post> posts = postRepositorySupport.findByTag("영어");
+        List<Post> posts = postRepository.findByTag("영어");
         Member member = memberRepository.findByNickName("테스트멤버1").orElseThrow(()->new IllegalArgumentException("해당 멤버 없음"));
         Post post = posts.get(0);
         CommentRequest commentRequest = new CommentRequest(member.getUserId(),post.getId(),"this comment should be deleted");
@@ -87,7 +84,7 @@ public class CommentServiceTest {
         //then
         Comment target2 = commentRepository.findById(savedComment.getId()).orElseThrow(()->new IllegalArgumentException("해당 댓글 없음"));
         Assertions.assertThat(target2).isNull();
-        List<Post> posts2 = postRepositorySupport.findByTag("영어");
+        List<Post> posts2 = postRepository.findByTag("영어");
         Post post2 = posts2.get(0);
         List<Comment> comments = post2.getPostcomments();
         Assertions.assertThat(comments.size()).isEqualTo(0);
