@@ -99,7 +99,7 @@ public class PostService {
     //회원의 포스트 목록 가져오기
     public List<Post> getUserPosts(String userId){
        Member member = memberRepository.findByUserId(userId).orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
-        return postRepository.findByMember(member.getId());
+        return postRepository.findByMember(member);
     }
 
     //전체 포스트 목록 가져오기
