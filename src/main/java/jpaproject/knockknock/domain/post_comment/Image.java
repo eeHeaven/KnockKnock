@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Image {
     @Id
     @GeneratedValue
-    @Column(name="image_id")
+    @Column(name = "image_id")
     private Long id;
 
     private String imgurl;
@@ -22,9 +22,10 @@ public class Image {
     @JoinColumn(name = "post_id")
     private Post post;
 
-     void setPost(Post post){
+    void setPost(Post post) {
         this.post = post;
     }
+
     public Image(String imgurl, Post post) {
         this.imgurl = imgurl;
         this.post = post;

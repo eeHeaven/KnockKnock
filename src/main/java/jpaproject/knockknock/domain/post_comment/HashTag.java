@@ -15,8 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class HashTag {
 
-    @Id @GeneratedValue
-    @Column(name="tag_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "tag_id")
     private Long id;
 
     private String tag;
@@ -25,7 +26,7 @@ public class HashTag {
     @OneToMany(mappedBy = "hashtag")
     private List<PostHashTag> posthashtags = new ArrayList<>();
 
-    public HashTag(String tag){
+    public HashTag(String tag) {
         this.tag = tag;
     }
 

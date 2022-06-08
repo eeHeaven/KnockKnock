@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionAdvice {
 
     @ExceptionHandler({CustomException.class})
-    protected ResponseEntity<CustomExceptionEntity> exceptionHandler(final CustomException e){
+    protected ResponseEntity<CustomExceptionEntity> exceptionHandler(final CustomException e) {
         return ResponseEntity.status(e.getError().getHttpStatus())
                 .body(CustomExceptionEntity.builder()
                         .errorMessage(e.getError().getMessage())

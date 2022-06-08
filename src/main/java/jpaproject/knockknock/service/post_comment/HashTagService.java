@@ -5,7 +5,6 @@ import jpaproject.knockknock.domain.post_comment.Post;
 import jpaproject.knockknock.elk.HashTagESService;
 import jpaproject.knockknock.repository.post_comment.HashTagRepository;
 import jpaproject.knockknock.repository.post_comment.PostRepository;
-import jpaproject.knockknock.repository.post_comment.PostRepositorySupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,6 @@ public class HashTagService {
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
     private final HashTagESService hashTagESService;
-    private final PostRepositorySupport postRepositorySupport;
 
     @Transactional
     public HashTag save(HashTag hashTag){
@@ -35,6 +33,6 @@ public class HashTagService {
     }
 
     public List<Post> PostListByTag(String hashtag){
-        return postRepositorySupport.findByTag(hashtag);
+        return postRepository.findByTag(hashtag);
     }
 }

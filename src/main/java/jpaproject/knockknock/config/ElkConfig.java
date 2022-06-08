@@ -26,15 +26,15 @@ public class ElkConfig {
     private Integer port; // 9200
 
     @Bean
-    public RestHighLevelClient client(){
+    public RestHighLevelClient client() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo(hostname+":"+port)
+                .connectedTo(hostname + ":" + port)
                 .build();
         return RestClients.create(clientConfiguration).rest();
     }
 
     @Bean
-    public ElasticsearchOperations elasticsearchTemplate(){
+    public ElasticsearchOperations elasticsearchTemplate() {
         return new ElasticsearchRestTemplate(client());
     }
 }

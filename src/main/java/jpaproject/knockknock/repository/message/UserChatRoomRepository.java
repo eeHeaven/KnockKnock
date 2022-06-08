@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserChatRoomRepository extends JpaRepository<UserChatRoom,Long> {
+public interface UserChatRoomRepository extends JpaRepository<UserChatRoom, Long> {
     List<UserChatRoom> findByMemberId(Long id);
 }

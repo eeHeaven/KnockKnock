@@ -24,34 +24,33 @@ import java.util.stream.Collectors;
 public class HashTagController {
 
     private final HashTagService hashTagService;
-    private final PostService postService;
     private final HashTagESService hashTagESService;
 
     @GetMapping("api/post/view/hashtag")
-    public Result viewPostByTag(@RequestParam(name = "hashtag")String hashtag){
+    public Result<List<PostListResponse>> viewPostByTag(@RequestParam(name = "hashtag") String hashtag) {
         List<Post> posts = hashTagService.PostListByTag(hashtag);
-        if(posts == null) {
-            log.info("해시태그 {}를 포함한 게시글 없음",hashtag);
-            return new Result(new ArrayList<>());
+        if (posts == null) {
+            log.info("해시태그 {}를 포함한 게시글 없음", hashtag);
+            return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, new ArrayList<>());
         }
 
         List<PostListResponse> dtos = posts.stream()
-                .map(p->PostListResponse.entityToDto(p))
+                .map(PostListResponse::entityToDto)
                 .collect(Collectors.toList());
         log.info("해시태그 {}를 포함한 게시글 {} 개 조회", hashtag, posts.size());
-        return new Result(dtos);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
     @GetMapping("api/search/autocomplete")
-    public Result viewHashTagAutoCompleteResult(@RequestParam(name = "input")String input){
-        log.info("AutoCompleteApi start: input = "+input);
+    public Result<List<HashTagResponse>> viewHashTagAutoCompleteResult(@RequestParam(name = "input") String input) {
+        log.info("AutoCompleteApi start: input = " + input);
         List<HashTag> hashTags = hashTagESService.findHashTagbyinput(input);
-        for(HashTag each: hashTags){
-            log.info("조회된 검색어 자동완성 리스트 : " +each.getTag());
+        for (HashTag each : hashTags) {
+            log.info("조회된 검색어 자동완성 리스트 : " + each.getTag());
         }
-        List<HashTagResponse> dtos = hashTags.stream().map(h->new HashTagResponse(h.getTag()))
+        List<HashTagResponse> dtos = hashTags.stream().map(h -> new HashTagResponse(h.getTag()))
                 .collect(Collectors.toList());
-        return new Result(dtos);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
 }

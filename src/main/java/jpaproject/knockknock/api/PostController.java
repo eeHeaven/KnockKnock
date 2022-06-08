@@ -35,7 +35,7 @@ public class PostController {
     //로그인 한 계정으로 게시글 작성하기
     @PostMapping(value = "api/post", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public PostResponse savePost(@RequestPart("request") @Valid PostSaveRequest request,
-                                     @RequestPart(required = false) MultipartFile image
+                                 @RequestPart(required = false) MultipartFile image
     ) throws IOException {
         Post post = postService.save(request);
         if (image != null) imageService.saveImage(image, "knockknock", post);
@@ -47,32 +47,32 @@ public class PostController {
 
     //로그인 한 계정으로 자신이 작성한 게시글 리스트 조회하기
     @GetMapping("api/post/viewlist/{userId}")
-    public Result viewPostofWriter(@PathVariable("userId")String writerId){
+    public Result<List<PostListResponse>> viewPostofWriter(@PathVariable("userId") String writerId) {
         List<Post> posts = postService.getUserPosts(writerId);
         List<PostListResponse> dtos = PostListResponse.entityListToDtoList(posts);
         log.info("dto ={}", dtos);
-        return new Result(dtos);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
     //전체 게시글 리스트 조회하기
     @GetMapping("api/post/view")
-    public Result viewPost(){
+    public Result<List<PostListResponse>> viewPost() {
         List<Post> posts = postService.getPosts();
         List<PostListResponse> dtos = PostListResponse.entityListToDtoList(posts);
-        return new Result(dtos);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
     //위치기반 1km 이내 게시글 리스트 조회하기
     @GetMapping("api/post/view/{latitude}/{longitude}")
-    public Result viewPostListbyLocation(@PathVariable("latitude")Double latitude, @PathVariable("longitude")Double longitude){
+    public Result<List<PostListResponse>> viewPostListbyLocation(@PathVariable("latitude") Double latitude, @PathVariable("longitude") Double longitude) {
         List<Post> posts = postService.getPostsbyLocation(latitude, longitude);
-        List<PostListResponse> dtos =PostListResponse.entityListToDtoList(posts);
-        return new Result(dtos);
+        List<PostListResponse> dtos = PostListResponse.entityListToDtoList(posts);
+        return new Result<>(SuccessCode.LIST_SUCCESSFULLY_RETURNED, dtos);
     }
 
     //게시글 하나 detail 정보 조회
     @GetMapping("api/post/view/{userId}/{postId}")
-    public PostResponse viewEachPost(@PathVariable("userId")String userId, @PathVariable("postId")Long id){
+    public PostResponse viewEachPost(@PathVariable("userId") String userId, @PathVariable("postId") Long id) {
         Post post = postService.getPostById(id);
         //포인트 변화
         PointModify pointModify = pointModifyFactory.findPointModify(PointModify.Situation.viewPost);
@@ -82,12 +82,12 @@ public class PostController {
     }
 
     @DeleteMapping("api/post/view/{postid}/delete")
-    public void deletePost(@PathVariable("postid")Long postid){
+    public void deletePost(@PathVariable("postid") Long postid) {
         postService.delete(postid);
     }
 
     @DeleteMapping("api/comment/{commentid}/delete")
-    public void deleteComment(@PathVariable("commentid")Long commentid){
+    public void deleteComment(@PathVariable("commentid") Long commentid) {
         commentService.delete(commentid);
     }
 

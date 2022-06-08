@@ -12,7 +12,7 @@ public class CustomExceptionEntity {
     private final String errorMessage;
 
     @Builder
-    public CustomExceptionEntity(HttpStatus status, String errorCode, String errorMessage){
+    public CustomExceptionEntity(HttpStatus status, String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

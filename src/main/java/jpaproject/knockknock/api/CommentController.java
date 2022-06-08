@@ -14,10 +14,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("api/post/view/comment")
-    public CommentResponse saveComment(@RequestBody CommentRequest request){
+    public CommentResponse saveComment(@RequestBody CommentRequest request) {
         Comment savedcomment = commentService.save(request);
-        CommentResponse response = CommentResponse.entityToDto(savedcomment);
-        return response;
+        return CommentResponse.entityToDto(savedcomment);
     }
 
 

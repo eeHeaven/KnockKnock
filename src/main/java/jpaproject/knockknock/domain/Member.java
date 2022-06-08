@@ -11,15 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="member")
+@Table(name = "member")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(builderMethodName = "memberBuilder")
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="member_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     private String nickName;
@@ -37,10 +38,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<UserChatRoom> chatRooms = new ArrayList<>();
 
-    @OneToMany(mappedBy="commentwriter")
+    @OneToMany(mappedBy = "commentwriter")
     private List<Comment> membercomments = new ArrayList<Comment>();
 
-    public static Member dtoToEntity(SignUpRequest request){
+    public static Member dtoToEntity(SignUpRequest request) {
         return memberBuilder()
                 .userId(request.getMemberId())
                 .userPassword(request.getMemberPassword())
@@ -48,8 +49,13 @@ public class Member {
                 .build();
     }
 
-    public void setPoint(int point){this.sharePoint = point; }
-    public int reported(){ return ++this.reportCount;}
+    public void setPoint(int point) {
+        this.sharePoint = point;
+    }
+
+    public int reported() {
+        return ++this.reportCount;
+    }
 
 
     public void setBlocked(boolean blocked) {

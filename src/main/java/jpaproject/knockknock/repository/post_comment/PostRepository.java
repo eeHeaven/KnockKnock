@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post,Long> {
-
- List<Post> findByMember(Long id);
+public interface PostRepository extends JpaRepository<Post,Long>,PostRepositoryCustom {
+ List<Post> findByPostwriter(Member member);
 }

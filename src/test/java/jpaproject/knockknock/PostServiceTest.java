@@ -83,7 +83,7 @@ public class PostServiceTest {
                 .orElseThrow(()-> new CustomException(ExceptionEnum.POST_NOT_FOUND));
         HashTag targetHashTag2 = hashTagRepository.findByTag("인사")
                 .orElseThrow(()-> new IllegalArgumentException("해당 해시태그 없음"));
-        List<PostHashTag> targetlist = postHashTagRepository.findByHashTag(targetHashTag2.getId());
+        List<PostHashTag> targetlist = postHashTagRepository.findByHashtag(targetHashTag2);
         Assertions.assertThat(targetPost).isNull();
         Assertions.assertThat(targetHashTag).isNull();
         Assertions.assertThat(targetHashTag2).isNotNull();

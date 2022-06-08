@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class PostService {
 
     private final PointModifyFactory pointModifyFactory;
     private final PostRepository postRepository;
-    private final PostRepositorySupport postRepositorySupport;
     private final HashTagRepository hashTagRepository;
     private final HashTagService hashTagService;
     private final CommentRepository commentRepository;
@@ -99,7 +96,7 @@ public class PostService {
     //회원의 포스트 목록 가져오기
     public List<Post> getUserPosts(String userId){
        Member member = memberRepository.findByUserId(userId).orElseThrow(()->new CustomException(ExceptionEnum.USER_NOT_FOUND));
-        return postRepository.findByMember(member.getId());
+        return postRepository.findByPostwriter(member);
     }
 
     //전체 포스트 목록 가져오기
@@ -114,6 +111,6 @@ public class PostService {
 
     //위치기반 근처 게시글 목록 가져오기
     public List<Post> getPostsbyLocation(double latitude, double longitude) {
-        return postRepositorySupport.findByLocation(latitude,longitude);
+        return postRepository.findByLocation(latitude,longitude);
     }
 }

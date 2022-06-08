@@ -20,20 +20,16 @@ public class MemberController {
 
     //회원가입
     @PostMapping(value = "api/member")
-    public MemberInfoResponse signup(@RequestBody @Valid SignUpRequest form){
+    public MemberInfoResponse signup(@RequestBody @Valid SignUpRequest form) {
         Member newMember = memberService.signUp(form);
-        MemberInfoResponse response = MemberInfoResponse.entityToDto(newMember);
-        return response;
+        return MemberInfoResponse.entityToDto(newMember);
     }
 
     @GetMapping("api/login/{id}/{pw}")
-    public MemberInfoResponse login(@PathVariable("id") String id, @PathVariable("pw") String pw){
-        Member member = memberService.login(new LoginRequest(id,pw));
-        MemberInfoResponse memberBasicInfo = MemberInfoResponse.entityToDto(member);
-        return memberBasicInfo;
+    public MemberInfoResponse login(@PathVariable("id") String id, @PathVariable("pw") String pw) {
+        Member member = memberService.login(new LoginRequest(id, pw));
+        return MemberInfoResponse.entityToDto(member);
     }
-
-
 
 
 }

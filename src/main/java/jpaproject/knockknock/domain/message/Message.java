@@ -8,15 +8,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name="message")
+@Table(name = "message")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class Message {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="message_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "message_id")
     private Long id;
 
     private String message;
@@ -26,23 +27,23 @@ public class Message {
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
 
-    @Column(name="message_timedate")
+    @Column(name = "message_timedate")
     private String timestamp;
 
     @PrePersist
-    public void onPrePersist(){
+    public void onPrePersist() {
         String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
         this.timestamp = s;
     }
 
-    public static Message dtoToEntity(MessageRequest request){
+    public static Message dtoToEntity(MessageRequest request) {
         return builder()
                 .message(request.getMessage())
                 .senderId(request.getSenderId())
                 .build();
     }
 
-     void setChatRoom(ChatRoom chatRoom) {
+    void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
 }
