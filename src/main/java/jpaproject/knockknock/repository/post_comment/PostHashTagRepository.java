@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface PostHashTagRepository extends JpaRepository<PostHashTag,Long> {
-    List<PostHashTag> findByHashTag(HashTag hashTag);
+    List<PostHashTag> findByHashtag(HashTag hashTag);
 }
